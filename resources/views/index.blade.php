@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title','Ask and answer An-Najah University students')
+@section('title','Ask and answer')
 
 @section('style')
     <link rel="stylesheet" href="{{ asset('css/index.css') }}" />
