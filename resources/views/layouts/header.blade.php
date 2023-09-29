@@ -267,7 +267,7 @@
         <hr style="border-bottom: 3px solid #00aeff;">
     </div>
 	<div class="setting-row text-center p-3 mt-3">
-        <a href="{{ route('control_panel.colleges') }}">
+        <a href="{{ route('colleges.index') }}">
             <div class="row">
                 <div class="col-sm-3"></div>
                 <div class="col-sm-1">
@@ -282,7 +282,7 @@
 	</div>
 
 	<div class="setting-row p-3">
-		<a href="{{ route('control_panel.courses') }}">
+		<a href="{{ route('courses.index') }}">
             <div class="row">
                 <div class="col-sm-3"></div>
                 <div class="col-sm-1">

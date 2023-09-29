@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CollegesController;
+use App\Http\Controllers\CoursesController;
 use App\Models\College;
 /*
 |--------------------------------------------------------------------------
@@ -24,21 +25,9 @@ Route::get('/', function () {
 
 Route::middleware('auth')->group(function () {
 
-    Route::get('/main', function () {
-        return view('main');
-    })->name('main');
+    Route::get('/main', function () { return view('main'); })->name('main');
 
     Route::prefix('control_panel')->group(function () {
-        Route::get('/colleges', function () {
-            return view('control_panel.colleges',[
-                'colleges' => College::orderBy('id', 'DESC')->get()
-            ]);
-        })->name('control_panel.colleges');
-
-        Route::get('/courses', function () {
-            return view('control_panel.courses');
-        })->name('control_panel.courses');
-
         Route::get('/questions', function () {
             return view('control_panel.questions');
         })->name('control_panel.questions');
@@ -47,9 +36,12 @@ Route::middleware('auth')->group(function () {
             return view('control_panel.complaints');
         })->name('control_panel.complaints');
 
-        Route::resource('/colleges', CollegesController::class)->except([
-            'index', 'create', 'edit'
-        ]);
+        Route::resource('/colleges', CollegesController::class)->except(['create', 'edit']);
+
+        Route::resource('/courses', CoursesController::class)->except(['create', 'edit']);
+        Route::post('/courses/setResource/{course}' , 'CoursesController@setResource')->name('courses.setResource');
+        Route::post('/courses/deleteResource/{resource}' , 'CoursesController@deleteResource')->name('courses.deleteResource');
+        Route::get('/courses/getResources/{course_id}' , 'CoursesController@getResources')->name('courses.getResources');
     });
 
 });

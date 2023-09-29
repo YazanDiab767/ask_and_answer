@@ -11,6 +11,9 @@ class CollegesController extends Controller
 
     public function index()
     {
+        return view('control_panel.colleges',[
+            'colleges' => College::orderBy('id', 'DESC')->get()
+        ]);
     }
 
     public function create()
@@ -53,11 +56,6 @@ class CollegesController extends Controller
             Storage::disk('public')->delete($college->image);
             $data['image'] = $image;
         }
-        // Operation::create([
-        //     'user_id' => auth()->user()->id,
-        //     'type' => 'update',
-        //     'details' => ' قام هذا المشرف بالتعديل على الكلية من اسم  ' . $college->name . ' الى - ' . $request->name
-        // ]);
 
         $college->update($data);
         return $college;
@@ -66,11 +64,6 @@ class CollegesController extends Controller
     public function destroy(College $college)
     {
         Storage::disk('public')->delete($college->image);
-        // Operation::create([
-        //     'user_id' => auth()->user()->id,
-        //     'type' => 'delete',
-        //     'details' => ' قام هذا المشرف بحذف كلية باسم : ' . $college->name
-        // ]);
         $college->delete();
     }
 }

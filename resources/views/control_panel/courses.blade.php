@@ -31,8 +31,9 @@
                                         
                                         <div class="text-left mt-4">
                                             <select class="form-control" name="college_id">
-                                                <option value = ""> College 1 </option>
-                                                <option value = ""> College 2 </option>
+                                                @foreach ($colleges as $college)
+                                                    <option value = "{{ $college->id }}"> {{ $college->name }} </option>
+                                                @endforeach
                                             </select> 
                                             <div class="input-group mb-3 mt-3">
                                                 <div class="input-group-prepend">
@@ -105,8 +106,9 @@
                     <div class="mt-4">
                         <label> College  : </label>
                         <select class="form-control" id="college_id" name="college_id">
-                            <option value = ""> College 1 </option>
-                            <option value = ""> College 2 </option>
+                            @foreach ($colleges as $college)
+                                <option value = "{{ $college->id }}"> {{ $college->name }} </option>
+                            @endforeach
                         </select> 
                     </div>
                 </form>
