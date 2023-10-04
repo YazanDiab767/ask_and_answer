@@ -24,44 +24,59 @@
 
                                     <div class="card-body">
                                         
-
-                                        {{-- <div class="text-left mt-3">
-                                            <label>  <i class="fas fa-search"></i>  Search : </label>
-                                            <input type="number" placeholder="enter number of question" class="form-control mt-3"/>
-                                        </div>
-                                   --}}
                                         <div class="input-group mb-3 mt-3">
                                             <div class="input-group-prepend">
-                                              <span class="input-group-text bg-white"><i class="fas fa-search text-primary"></i></span>
+                                                <span class="input-group-text bg-white"><i class="fas fa-search text-primary"></i></span>
                                             </div>
-                                            <input type="text" class="form-control" placeholder="Please enter number of question" aria-label="Username" aria-describedby="basic-addon1">
+                                            <input type="text" class="form-control" id="question_id" placeholder="Please enter number of question">
                                         </div>
 
                                         <div class="table-responsive mt-5">
                                             <table class="table table-bordered text-center " id="cs">
                                                     <tr>
                                                         <td class="font-weight-bold w-25"> Question number </td>
-                                                        <td> 15 </td>
-                                                    </tr>
-
-                                                    <tr>
-                                                        <td class="font-weight-bold"> Count of comments </td>
-                                                        <td> 15 </td>
+                                                        <td id="question_number">  </td>
                                                     </tr>
 
                                                     <tr>
                                                         <td class="font-weight-bold"> Student name </td>
-                                                        <td> Yazan Diab </td>
+                                                        <td id="student_name">  </td>
+                                                    </tr>
+
+                                                    <tr>
+                                                        <td class="font-weight-bold">  Count of comments </td>
+                                                        <td> 5 </td>
+                                                    </tr>
+
+                                                    
+                                                    <tr>
+                                                        <td class="font-weight-bold">  College - Course </td>
+                                                        <td id="college_course">  </td>
+                                                    </tr>
+
+                                                    <tr>
+                                                        <td class="font-weight-bold">  Date and time of publication </td>
+                                                        <td id="date_time">  </td>
+                                                    </tr>
+
+                                                    <tr>
+                                                        <td class="font-weight-bold">  Visit Question </td>
+                                                        <td id="visit_question">  </td>
                                                     </tr>
 
                                                     <tr>
                                                         <td class="font-weight-bold"> Status </td>
-                                                        <td>
-                                                            <label class="text-success font-weight-bold">Active</label>
-                                                            <button class="btn btn-danger delete_college ml-5"> <i class="fa-solid fa-toggle-off"></i> Inavtive  </button>
+                                                        <td id="status_question">
+          
                                                         </td>
                                                     </tr>
-                                                        
+
+                                                    <tr>
+                                                        <td class="font-weight-bold">  Comment from supervisor </td>
+                                                        <td id="comments">  </td>
+                                                    </tr>
+
+
                                                 </tbody>
                                             </table>
                                         </div>
@@ -123,6 +138,7 @@
 @section('script')
 @parent
 	<script src="{{ asset('js/control_panel/all.js') }}"></script>
+    <script src="{{ asset('js/control_panel/questions.js') }}"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src=" https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
 @endsection

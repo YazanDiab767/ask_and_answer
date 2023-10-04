@@ -3,8 +3,9 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use \App\Models\Complaint;
 
-class CreateQuestionsTable extends Migration
+class CreateComplaintsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,26 +14,27 @@ class CreateQuestionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('questions', function (Blueprint $table) {
+        Schema::create('complaints', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('course_id');
+            $table->enum('type', Complaint::$types );
             $table->longText('text');
-            $table->text('image');
-            $table->boolean('active')->default( false ); // stop comments for question
-            $table->text('note'); // supervisor note on this question
+            $table->unsignedBigInteger('question_id');
+            $table->text('handledBy'); //the supervisor handels this complaint
             $table->timestamps();
-            $table->softDeletes();
 
             $table->foreign('user_id')
             ->references('id')
             ->on('users')
             ->onDelete('cascade');
 
-            $table->foreign('course_id')
+            $table->foreign('question_id')
             ->references('id')
-            ->on('courses')
+            ->on('questions')
             ->onDelete('cascade');
+
+        
+
         });
     }
 
@@ -43,6 +45,6 @@ class CreateQuestionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('questions');
+        Schema::dropIfExists('complaints');
     }
 }

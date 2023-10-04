@@ -6,6 +6,10 @@ use App\Models\Course;
 use App\Models\College;
 use App\Models\Resource;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+
+
 
 class CoursesController extends Controller
 {
@@ -16,13 +20,18 @@ class CoursesController extends Controller
         if ( College::count() )
         {
             $id = College::all()->first()->id;
-            $courses = College::find( $id )->courses()->get() ;
+            $courses = College::find( $id )->courses()->orderBy('id', 'DESC')->get();
         }
         
         return view('control_panel.courses',[
             'colleges' => College::all() ,
             'courses' => $courses
         ]);
+    }
+
+    public function getCoursesCollege($college_id)
+    {
+        return Course::where('college_id',$college_id)->get();
     }
 
 
@@ -34,6 +43,10 @@ class CoursesController extends Controller
     {
         if ($request->ajax())
         {
+            $validated = $request->validate([
+                'name' => 'required|min:3|max:255',
+            ]);
+
             $course = Course::create([
                 'college_id' => $request->college_id ,
                 'name' => $request->name
@@ -64,10 +77,9 @@ class CoursesController extends Controller
 
     public function destroy(Course $course)
     {
-        if ($request->ajax())
-        {
-            $course->delete();
-        }
+ 
+        $course->delete();
+        
     }
 
 
@@ -78,7 +90,6 @@ class CoursesController extends Controller
         if ($request->ajax())
         {
             $request->validate([
-                'course_id' => 'required',
                 'title' => 'required',
                 'file' => 'required|file|mimes:jpg,jpeg,bmp,png,doc,docx,csv,rtf,xlsx,xls,txt,pdf,zip'
             ]);
@@ -90,7 +101,11 @@ class CoursesController extends Controller
                 'file' => $request->file->store('resources','public')
             ]);
 
-            return $resource;
+            return DB::table('resources')
+                ->where('course_id',$course_id)
+                ->where('resources.id',$resource->id)
+                ->leftJoin('users', 'users.id', '=', 'resources.user_id')
+                ->get(['resources.*','users.name']);
         }
     }    
 
@@ -99,18 +114,20 @@ class CoursesController extends Controller
     {
         if ($request->ajax())
         {
-            $resources = Resource::where('course_id',$course_id)->get();
+            // $resources = Resource::where('course_id',$course_id)->get()->friends();
+           $resources = DB::table('resources')
+            ->where('course_id',$course_id)
+            ->leftJoin('users', 'users.id', '=', 'resources.user_id')
+            ->get(['resources.*','users.name']);
             return $resources;
         }
     }
 
     //delete resource
-    public function deleteResource(Request $request , Resource $resource)
+    public function deleteResource(Resource $resource)
     {
-        if ($request->ajax())
-        {
-            Storage::disk('public')->delete($resource->file);
-            $resource->delete();
-        }
+        Storage::disk('public')->delete($resource->file);
+        $resource->delete();
+        
     }
 }

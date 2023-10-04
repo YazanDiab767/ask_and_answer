@@ -4,82 +4,102 @@ namespace App\Http\Controllers;
 
 use App\Models\Question;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
-class QuestionController extends Controller
+class QuestionsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
-        //
+        return view('control_panel.questions');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function create()
     {
-        //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+
     public function store(Request $request)
     {
-        //
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Question  $question
-     * @return \Illuminate\Http\Response
-     */
+
     public function show(Question $question)
     {
-        //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Question  $question
-     * @return \Illuminate\Http\Response
-     */
+
     public function edit(Question $question)
     {
-        //
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Question  $question
-     * @return \Illuminate\Http\Response
-     */
+
     public function update(Request $request, Question $question)
     {
-        //
+
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Question  $question
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Question $question)
     {
-        //
     }
+
+    public function getQuestion(Request $request,$id)
+    {
+        if ($request->ajax())
+        {
+            // return Question::withTrashed(['users'])->find($id);
+            
+
+            return DB::table('questions')
+            ->where('questions.id',$id)
+            ->leftJoin('users', 'users.id', '=', 'questions.user_id')
+            ->leftJoin('courses', 'courses.id', '=', 'questions.course_id')
+            ->leftJoin('colleges', 'colleges.id', '=', 'courses.college_id')
+            ->get(['questions.*','users.name as username','courses.name as course_name' ,'colleges.name as college_name']);
+        }
+    }
+
+    //stop question - soft delete -
+    public function stopQuestion(Request $request , Question $question)
+    {
+        if ($request->ajax())
+        {
+            $question_id = $question->id;
+            
+            $question->active = 0;
+
+            $question->note = json_encode([
+                "stopedBy" => auth()->user()->name,
+                "note" => $request->note
+            ]);
+
+            $question->save();
+            $question->delete();
+
+        }
+    }
+
+    //restore question
+    public function retrunQuestion(Request $request , $question_id)
+    {
+        if ($request->ajax())
+        {
+            $question = Question::onlyTrashed()->find($question_id);
+            $question->note = "";
+            $question->active = 1;
+            $question->save();
+            $question->restore();
+
+            // NotificationsController::setReturnQuestion( $question_id );
+
+            // return view(
+            //     'formats.dashboard.question',
+            //     [
+            //         'question' => Question::withTrashed()->find( $question_id )
+            //     ]
+            // );
+        } 
+    }
+
 }

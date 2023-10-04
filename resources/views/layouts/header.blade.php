@@ -324,7 +324,7 @@
 	</div>
 
 	<div class="setting-row p-3">
-        <a href="{{ route('control_panel.complaints') }}">
+        <a href="{{ route('users.index') }}">
             <div class="row">
                 <div class="col-sm-3"></div>
                 <div class="col-sm-1">
@@ -338,7 +338,7 @@
 	</div>
 
 	<div class="setting-row p-3">
-        <a href="{{ route('control_panel.complaints') }}">
+        <a href="{{ route('control_panel.statistics') }}">
             <div class="row">
                 <div class="col-sm-3"></div>
                 <div class="col-sm-1">

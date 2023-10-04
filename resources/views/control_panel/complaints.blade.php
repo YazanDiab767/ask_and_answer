@@ -20,7 +20,7 @@
 						<div class="row justify-content-center" id="page-contents">
 							<div class="col-lg-11">
 								<div class="central-meta text-center">
-                                    <h2 class="f-title" style="font-size: 25px"><i class="fa-solid fa-triangle-exclamation text-black" style="font-size: 25px"></i> Complaints </h2>
+                                    <h2 class="f-title" style="font-size: 25px"><i class="fa-solid fa-triangle-exclamation text-black" style="font-size: 25px"></i> Complaints ( {{ \App\Models\Complaint::where('handledBy','')->count() }} ) </h2>
 
                                     <div class="card-body">
 
@@ -30,32 +30,52 @@
                                                 <thead>
                                                     <tr>
                                                         <th>  </th>
+                                                        <th> <b> Date and time </b> </th>
                                                         <th> <b> Username </b> </th>
+                                                        <th> <b> Question number </b> </th>
+                                                        <th> <b> Complaint type </b> </th>
+                                                        <th> </th>
                                                         <th>  </th>
-                                                        <th>  </th>
+                                                        <th></th>
                                                     </tr>
                                                 </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td class="align-middle"> 1 </td>
-                                                        <td class="align-middle"> yazan diab </td>
-                                                        <td class="align-middle  w-25"> <a href="#" class="btn btn-success w-75" data-toggle="modal" data-target=".complaintText" > <i class="fa-solid fa-eye"></i> Show text  </a> </td>
-                                                        <td class="align-middle  w-25">
-                                                            <button class="btn btn-danger delete_complaint w-75"> <i class="fas fa-trash"></i> Delete  </button>
-                                                        </td>
-                                                    </tr>  
-                                                    {{-- <tr>
-                                                        <td class="align-middle"> 2 </td>
-                                                        <td class="align-middle "> course 2 </td>
-                                                        <td class="align-middle w-25"> <a href="#" class="btn btn-success w-100" data-toggle="modal" data-target=".complaintText" > <i class="fa-solid fa-eye"></i> Show text  </a> </td>
-                                                        <td class="align-middle w-25">
-                                                            <button class="btn btn-danger delete_complaint w-100"> <i class="fas fa-trash"></i> Delete  </button>
-                                                        </td>
-                                                    </tr>   --}}
-                                                   
+                                                <tbody id="complaints">
+                                                    @php $c = 1; @endphp
+                                                    @foreach ($complaints as $complaint)
+                                                        <tr>
+                                                            <td class="align-middle"> {{ $c++ }} </td>
+                                                            <td class="align-middle"> {{ $complaint->created_at }} </td>
+                                                            <td class="align-middle"> {{ $complaint->user->name }} </td>
+                                                            <td class="align-middle"> {{ $complaint->question_id }} </td>
+                                                            <td class="align-middle"> {{ $complaint->type }} </td>
+                                                            <td class="align-middle "> <a href="{{ $complaint->text }}" class="btn btn-success showText" data-toggle="modal" data-target=".complaintText" > <i class="fa-solid fa-eye"></i> Show text  </a> </td>
+                                                            <td class="align-middle ">
+                                                                <td>
+                                                                    @if ($complaint->handledBy)
+                                                                       <label class="text-success">
+                                                                           <i class="far fa-check-circle"></i> 
+                                                                           Done by: {{ $complaint->handledBy }}
+                                                                        </label> 
+                                                                    @else
+                                                                        <a href="{{ $complaint->id }}" class="btn btn-success btnDone"><i class="far fa-check-circle"></i>  Done  </a>
+                                                                    @endif
+                                                                </td>
+                                                            </td>
+                                                        </tr>  
+                                                    @endforeach
                                                 </tbody>
                                             </table>
+
+                                           
+                                     
+
                                         </div>
+
+                                         @if (count( $complaints ) >= \App\Models\Complaint::$paginate)
+                                            <div class="row justify-content-center mt-3">
+                                                <button class="btn btn-primary w-25" id="showMore"> <i class="fa-solid fa-caret-down"></i> Show More </button>
+                                            </div>
+                                            @endif
                                     </div>
 
 								</div>
@@ -81,7 +101,7 @@
             </div>
             <div class="modal-body">
                 <div class="row justify-content-center mt-3">
-                    <p class="font-weight-bold text-black">
+                    <p class="font-weight-bold text-black text_complaint">
                         This is a text for complaint
                     </p>
                 </div>
@@ -102,6 +122,11 @@
 @section('script')
 @parent
 	<script src="{{ asset('js/control_panel/all.js') }}"></script>
+	<script src="{{ asset('js/control_panel/complaints.js') }}"></script>
+    <script>
+        var name = "{{ auth()->user()->name }}";
+        var count = {{ $c }};
+    </script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src=" https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
 @endsection

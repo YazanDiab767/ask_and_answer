@@ -1,3 +1,6 @@
 .chosen-container-single .chosen-single{
     color: black !important;
 }
+td{
+    vertical-align: middle !important;
+}

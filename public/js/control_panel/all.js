@@ -1,3 +1,12 @@
+function closeModal()
+{
+    //close modal
+    $('.modal-backdrop').remove();
+    $(".modal").modal('hide');
+    $(".modal").addClass('d-none');
+    $('body').css('overflow-y', 'auto');
+}
+
 
 $(document).ready(function(){
 
@@ -16,5 +25,7 @@ $(document).ready(function(){
             }).show();
         })
     }(jQuery));
+
+
     
 });

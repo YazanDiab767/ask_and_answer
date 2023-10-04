@@ -24,7 +24,7 @@
                                     <div class="card-body">
                                         <div class="row">
                                             <div class="col-sm-4 text-left">
-                                                <button class="btn btn-primary" data-toggle="modal" data-target=".newCollege"> <i class="fa-solid fa-plus"></i> Add new college </button>
+                                                <button class="btn btn-primary" id="btnAddNewCollege" data-toggle="modal" data-target=".newCollege"> <i class="fa-solid fa-plus"></i> Add new college </button>
                                             </div>
                                         </div>
 
@@ -57,11 +57,11 @@
                                                     @endphp
                                                     @foreach ($colleges as $college)
                                                         <tr class="college">
-                                                            <td class="align-middle"> {{ $c++ }} </td>
+                                                            <td class="align-middle"> {{ $c }} </td>
                                                             <td class="align-middle"> {{ $college->name }} </td>
                                                             <td class="align-middle"> <img class="rounded" width="150" height="100" src="{{ asset('storage/'. $college->image ) }}" /> </td>
                                                             <td class="align-middle text-right" style="width: 20%;">
-                                                                <a href="{{$college->id}}/{{$college->name}}" class="btn btn-success btnEditCollege w-50" data-toggle="modal" data-target=".editCollege" > <i class="fas fa-edit"></i> Edit  </a>
+                                                                <a href="{{$college->id}}/{{$college->name}}/{{ $c++ }}" class="btn btn-success btnEditCollege w-50" data-toggle="modal" data-target=".editCollege" > <i class="fas fa-edit"></i> Edit  </a>
                                                             <td class="align-middle text-left" style="width: 20%;">
                                                                 <form action="{{ route('colleges.destroy',$college->id) }}" class="formDeleteCollege" method="POST">
                                                                     @csrf
@@ -71,17 +71,6 @@
                                                             </td>
                                                         </tr>  
                                                     @endforeach
-                                                    {{-- <tr>
-                                                        <td class="align-middle"> 1 </td>
-                                                        <td class="align-middle"> college 1 </td>
-                                                        <td class="align-middle"> <img class="rounded" width="150" height="100" src="{{ asset('images/college_1.jpg') }}" /> </td>
-                                                        <td class="align-middle text-right" style="width: 20%;">
-                                                            <a href="#" class="btn btn-success btnEditCollege w-50" data-toggle="modal" data-target=".editCollege" > <i class="fas fa-edit"></i> Edit  </a>
-                                                        </td>
-                                                        <td class="align-middle text-left" style="width: 20%;">
-                                                            <a href="#" class="btn btn-danger text-white delete_college w-50"> <i class="fas fa-trash"></i> Delete  </a>
-                                                        </td>
-                                                    </tr>   --}}
                                                 </tbody>
                                             </table>
                                         </div>
@@ -101,7 +90,7 @@
 
 @section('modal')
 {{-- Form Add New College --}}
-<div class="modal fade newCollege" role="dialog" aria-hidden="true">
+<div class="modal newCollege" id="newCollege" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">

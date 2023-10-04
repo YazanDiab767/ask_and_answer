@@ -3,6 +3,10 @@ $(document).ready(function(){
     //Initialization
     $("#collegesCount").html( colleges_count );
 
+    $("#btnAddNewCollege").on('click', function(e){
+        $(".modal").removeClass('d-none');
+    });
+
     $("#addCollege").on('click', function(e){
         e.preventDefault();
         $("#formAddCollege").submit();
@@ -40,8 +44,8 @@ $(document).ready(function(){
                     </tr> 
                 `);
 
-                $(".modal").modal('hide');
-                $('.modal-backdrop').remove();
+                closeModal();
+              
                 $("#formAddCollege").trigger("reset");
             },
             error: function(data){
@@ -83,16 +87,18 @@ $(document).ready(function(){
 
     //edit college
     var thisRow;
+    var count;
     $("body").on('click' , '.btnEditCollege' , function(e){
         e.preventDefault();
 
         let link = $(this).attr('href');
         let id = link.split('/')[0];
         let name = link.split('/')[1];
+        count = link.split('/')[2];
         thisRow = $(this);
 
         $("#collegeName").val( name );
-        // $("#formUpdateCollege").trigger("reset");
+        $(".modal").removeClass('d-none');
         $("#formUpdateCollege").attr('action' , `${host}control_panel/colleges/${id}`);
     });
     
@@ -117,7 +123,7 @@ $(document).ready(function(){
                 $("#updateCollege").attr('disabled' , false);
                 thisRow.closest('.college').html(`
                    
-                        <td class="align-middle"> ${ data.id } </td>
+                        <td class="align-middle"> ${ count } </td>
                         <td class="align-middle"> ${ data.name } </td>
                         <td class="align-middle"> <img class="rounded" width="150" height="100" src="${host}storage/${ data.image }" /> </td>
                         <td class="align-middle text-right" style="width: 20%;">
@@ -133,8 +139,7 @@ $(document).ready(function(){
                  
                 `);
 
-                $(".modal").modal('hide');
-                $('.modal-backdrop').remove();
+                closeModal();
             },
             error: function(data){
                 $("#updateCollege").attr('disabled' , false);

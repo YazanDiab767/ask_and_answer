@@ -22,6 +22,7 @@ class CreateUsersTable extends Migration
             $table->enum('role',['admin','supervisor','student'])->default('student');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->text('permissions')->nullable();
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();
