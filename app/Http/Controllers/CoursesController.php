@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Course;
 use App\Models\College;
 use App\Models\Resource;
+use App\Models\Operation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -13,6 +14,16 @@ use Illuminate\Support\Facades\Storage;
 
 class CoursesController extends Controller
 {
+
+    
+    public function show(Course $course)
+    {
+        return view('course',[
+            'course' => $course
+        ]);
+    }
+
+    // D A S H - B O A R D
 
     public function index()
     {
@@ -35,10 +46,6 @@ class CoursesController extends Controller
     }
 
 
-    public function create()
-    {
-    }
-
     public function store(Request $request)
     {
         if ($request->ajax())
@@ -52,16 +59,16 @@ class CoursesController extends Controller
                 'name' => $request->name
             ]);
 
+            Operation::create([
+                'user_id' => auth()->user()->id,
+                'type' => 'add',
+                'details' => "Added a new course named: " . $request->name
+            ]);
+
+            
+
             return $course;
         }
-    }
-
-    public function show(Course $course)
-    {
-    }
-
-    public function edit(Course $course)
-    {
     }
 
     public function update(Request $request, Course $course)
@@ -71,18 +78,29 @@ class CoursesController extends Controller
             $course->name = $request->name;
             $course->college_id = $request->college_id;
             $course->save();
+        
+            Operation::create([
+                'user_id' => auth()->user()->id,
+                'type' => 'update',
+                'details' => "Modified course: " . $course->name  . " to : " . $request->name
+            ]);
+    
+
             return $course;
         }
     }
 
     public function destroy(Course $course)
     {
- 
+        
+        Operation::create([
+            'user_id' => auth()->user()->id,
+            'type' => 'delete',
+            'details' => 'Deleted course : ' . $course->name
+        ]);
         $course->delete();
         
     }
-
-
 
     //set new resource
     public function setResource(Request $request , $course_id)
@@ -100,6 +118,13 @@ class CoursesController extends Controller
                 'title' => $request->title,
                 'file' => $request->file->store('resources','public')
             ]);
+
+            Operation::create([
+                'user_id' => auth()->user()->id,
+                'type' => 'add',
+                'details' => ' Added new resource: ' . $request->title . ' to course:' . $resource->course->name
+            ]);
+
 
             return DB::table('resources')
                 ->where('course_id',$course_id)
@@ -127,6 +152,11 @@ class CoursesController extends Controller
     public function deleteResource(Resource $resource)
     {
         Storage::disk('public')->delete($resource->file);
+        Operation::create([
+            'user_id' => auth()->user()->id,
+            'type' => 'delete',
+            'details' => ' Deleted resource : ' . $resource->title . ' in course : ' . $resource->course->name
+        ]);
         $resource->delete();
         
     }

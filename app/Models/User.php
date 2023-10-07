@@ -18,7 +18,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'universityID', 'password', 'classNum', 'role'
+        'name', 'email', 'password', 'role' , 'country'
     ];
 
     /**
@@ -43,21 +43,26 @@ class User extends Authenticatable
 
     // ***  Relationships ***
 
-    // public function operations()
-    // {
-    //     return $this->hasMany('App\Operation');
-    // }
+    public function operations()
+    {
+        return $this->hasMany(\App\Models\Operation::class);
+    }
 
     public function complaints()
     {
-        return $this->hasMany('App\Complaint');
+        return $this->hasMany(\App\Models\Complaint::class);
     }
 
     public function questions()
     {
-        return $this->hasMany('App\Question');
+        return $this->hasMany(\App\Models\Question::class);
     }
     
+    public function resources()
+    {
+        return $this->hasMany(\App\Models\Resource::class);
+    }
+
     // public function comments()
     // {
     //     return $this->hasMany('App\Comment');
@@ -67,10 +72,4 @@ class User extends Authenticatable
     // {
     //     return $this->hasMany('App\Notification');
     // }
-
-    public function resources()
-    {
-        return $this->hasMany('App\Resource');
-    }
-
 }

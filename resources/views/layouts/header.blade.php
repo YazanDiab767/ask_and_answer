@@ -57,7 +57,10 @@
             </li>
             <hr>
             <li>
-                <span> <a href="#" title=""><i class="fa-solid fa-right-from-bracket"></i> Logout</a> </span>
+                <form class="logout-form" action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <span> <a href="#" title=""><i class="fa-solid fa-right-from-bracket"></i> Logout</a> </span>
+                </form>
             </li>
             {{-- <a href="#" title=""><span class="status f-online"></span> online</a> --}}
         </ul>
@@ -135,7 +138,7 @@
     <div class="logo">
         <a class="text-white" href="{{ route('main') }}">
             <img src="{{ asset('images/question.png') }}" width="50" height="50" alt="">
-            <b> Ask And Answer </b>
+            <b> CampusLink </b>
         </a>
     </div>
     
@@ -148,7 +151,7 @@
                 <a href="#" class="text-white"><i class="fa-solid fa-user"></i> My Profile</a>
             </li>
             <li>
-                <a href="#" class="text-white"><i class="fa-solid fa-building"></i> Colleges</a>
+                <a href="{{ route('colleges.showAll') }}" class="text-white"><i class="fa-solid fa-building"></i> Colleges</a>
             </li>
             <li>
                 <a href="#" class="text-white"><i class="fa-solid fa-circle-question"></i> My questions</a>
@@ -238,10 +241,12 @@
                     <a href="#" title="">Arabic</a>
                 </div>
             </li>
-            <li>
-                {{-- main-menu --}}
-                <span class="btnControlSide text-white" style="cursor:pointer"><i class="fa-solid fa-solar-panel"></i> </span>
-            </li>
+            @if ( auth()->user()->role == 'admin' || auth()->user()->role == 'supervisor' )
+                <li>
+                    {{-- main-menu --}}
+                    <span class="btnControlSide text-white" style="cursor:pointer"><i class="fa-solid fa-solar-panel"></i> </span>
+                </li>
+            @endif
         </ul>
         <div class="user-img">
             <img src="{{ asset('images/user.png') }}" width="50" height="50" alt="">
@@ -251,7 +256,7 @@
                 <a href="#" title=""><i class="fa-solid fa-user"></i> view profile </a>
                 <a href="#" title=""><i class="fa-solid fa-chart-line"></i> activity log </a>
                 <a href="#" title=""><i class="fa-solid fa-gear"></i> settings </a>
-                <a href="#" title=""><i class="fa-solid fa-right-from-bracket"></i> log out </a>
+                <a href="#" class="btnLogout"><i class="fa-solid fa-right-from-bracket"></i> Logout </a>
             </div>
         </div>
         <span class="text-white"> {{ auth()->user()->name }} </span>
@@ -266,104 +271,119 @@
         <h3 class="panel-title"> <i class="fa-solid fa-solar-panel"></i> Control Panel </h3>
         <hr style="border-bottom: 3px solid #00aeff;">
     </div>
-	<div class="setting-row text-center p-3 mt-3">
-        <a href="{{ route('colleges.index') }}">
-            <div class="row">
-                <div class="col-sm-3"></div>
-                <div class="col-sm-1">
-                    <i class="fa-solid fa-building-columns"></i>
-                </div>
-                <div class="col-sm-2">
-                    Colleges 
-                </div>
-        
-            </div>
-        </a>
-	</div>
+    
+    @php
+        $permissions = json_decode(auth()->user()->permissions , JSON_FORCE_OBJECT ) ;
+    @endphp
 
-	<div class="setting-row p-3">
-		<a href="{{ route('courses.index') }}">
-            <div class="row">
-                <div class="col-sm-3"></div>
-                <div class="col-sm-1">
-                    <i class="fa-solid fa-book"></i> 
+    @if ( isset( $permissions["colleges"] ) || auth()->user()->role == 'admin' )
+        <div class="setting-row text-center p-3 mt-3">
+            <a href="{{ route('colleges.index') }}">
+                <div class="row">
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-1">
+                        <i class="fa-solid fa-building-columns"></i>
+                    </div>
+                    <div class="col-sm-2">
+                        Colleges 
+                    </div>
+            
                 </div>
-                <div class="col-sm-2">
-                    Courses 
-                </div>
-            </div>
-        </a>
-	</div>
+            </a>
+        </div>
+    @endif
 
-	<div class="setting-row p-3">
-        <a href="{{ route('control_panel.questions') }}">
-            <div class="row">
-                <div class="col-sm-3"></div>
-                <div class="col-sm-1">
-                    <i class="fa-solid fa-circle-question"></i>
+    @if ( isset( $permissions["course"] ) || auth()->user()->role == 'admin' )
+        <div class="setting-row p-3">
+            <a href="{{ route('courses.index') }}">
+                <div class="row">
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-1">
+                        <i class="fa-solid fa-book"></i> 
+                    </div>
+                    <div class="col-sm-2">
+                        Courses 
+                    </div>
                 </div>
-                <div class="col-sm-2">
-                    Questions 
-                </div>
-            </div>
-        </a>
-	</div>
+            </a>
+        </div>
+    @endif
 
-	<div class="setting-row p-3">
-        <a href="{{ route('control_panel.complaints') }}">
-            <div class="row">
-                <div class="col-sm-3"></div>
-                <div class="col-sm-1">
-                    <i class="fa-solid fa-triangle-exclamation"></i> 
-                </div>
-                <div class="col-sm-2">
-                    Complaints 
-                </div>
-            </div>
-        </a>
-	</div>
+    @if ( isset( $permissions["questions_complaints"] ) || auth()->user()->role == 'admin' )
 
-	<div class="setting-row p-3">
-        <a href="{{ route('users.index') }}">
-            <div class="row">
-                <div class="col-sm-3"></div>
-                <div class="col-sm-1">
-                    <i class="fa-solid fa-users"></i>
+        <div class="setting-row p-3">
+            <a href="{{ route('control_panel.questions') }}">
+                <div class="row">
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-1">
+                        <i class="fa-solid fa-circle-question"></i>
+                    </div>
+                    <div class="col-sm-2">
+                        Questions 
+                    </div>
                 </div>
-                <div class="col-sm-2">
-                    Users 
-                </div>
-            </div>
-        </a>
-	</div>
+            </a>
+        </div>
 
-	<div class="setting-row p-3">
-        <a href="{{ route('control_panel.statistics') }}">
-            <div class="row">
-                <div class="col-sm-3"></div>
-                <div class="col-sm-1">
-                    <i class="fa-solid fa-layer-group"></i>
+        <div class="setting-row p-3">
+            <a href="{{ route('control_panel.complaints') }}">
+                <div class="row">
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-1">
+                        <i class="fa-solid fa-triangle-exclamation"></i> 
+                    </div>
+                    <div class="col-sm-2">
+                        Complaints 
+                    </div>
                 </div>
-                <div class="col-sm-2">
-                    Statistics 
-                </div>
-            </div>
-        </a>
-	</div>
+            </a>
+        </div>
 
-	<div class="setting-row p-3">
-        <a href="{{ route('control_panel.complaints') }}">
-            <div class="row">
-                <div class="col-sm-3"></div>
-                <div class="col-sm-1">
-                    <i class="fa-solid fa-clock-rotate-left"></i>
+    @endif
+
+    @if ( auth()->user()->role == 'admin' )
+        <div class="setting-row p-3">
+            <a href="{{ route('users.index') }}">
+                <div class="row">
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-1">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                    <div class="col-sm-2">
+                        Users 
+                    </div>
                 </div>
-                <div class="col-sm-2">
-                    Log 
+            </a>
+        </div>
+
+        <div class="setting-row p-3">
+            <a href="{{ route('control_panel.statistics') }}">
+                <div class="row">
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-1">
+                        <i class="fa-solid fa-layer-group"></i>
+                    </div>
+                    <div class="col-sm-2">
+                        Statistics 
+                    </div>
                 </div>
-            </div>
-        </a>
-	</div>
+            </a>
+        </div>
+
+        <div class="setting-row p-3">
+            <a href="{{ route('dashboard.operationsLog') }}">
+                <div class="row">
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-1">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                    </div>
+                    <div class="col-sm-2">
+                        Log 
+                    </div>
+                </div>
+            </a>
+        </div>
+    @endif
 </div>
 
 @endsection

@@ -10,7 +10,7 @@
 
 
 @section('body')
-
+@php $count = 1; @endphp
 <div class="theme-layout">
 	<section>
 		<div class="gap gray-bg">
@@ -23,26 +23,36 @@
                                     <h2 class="f-title" style="font-size: 25px"><i class="fa-solid fa-book text-black" style="font-size: 25px"></i> Courses ( {{ \App\Models\Course::all()->count() }} ) </h2>
 
                                     <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-sm-4 text-left">
-                                                <button class="btn btn-primary" id="btnAddNewCourse" data-toggle="modal" data-target=".newCourse"> <i class="fa-solid fa-plus"></i> Add new course </button>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="text-left mt-4">
-                                            <select class="form-control" id="college_id" name="college_id">
-                                                @foreach ($colleges as $college)
-                                                    <option value="{{ $college->id }}">{{ $college->name }}</option>
-                                                @endforeach
-                                            </select> 
-                                            <div class="input-group mb-3 mt-3">
-                                                <div class="input-group-prepend">
-                                                  <span class="input-group-text bg-white"><i class="fas fa-search text-primary"></i></span>
+                                        @php
+                                            $permissions = json_decode(auth()->user()->permissions , JSON_FORCE_OBJECT ) ;
+                                            $id_course = 0;
+                                            if ( isset( $permissions["course"] ) && auth()->user()->role == 'supervisor' )
+                                            {
+                                                $id_course = $permissions["course"];
+                                            }
+                                                
+                                        @endphp
+                                        @if ( $id_course == 0 )
+                                            <div class="row">
+                                                <div class="col-sm-4 text-left">
+                                                    <button class="btn btn-primary" id="btnAddNewCourse" data-toggle="modal" data-target=".newCourse"> <i class="fa-solid fa-plus"></i> Add new course </button>
                                                 </div>
-                                                <input type="text" class="form-control" id="searchInput" placeholder="Please enter course name" aria-label="Username" aria-describedby="basic-addon1">
                                             </div>
-                                        </div>
-                                  
+                                            
+                                            <div class="text-left mt-4">
+                                                <select class="form-control" id="college_id" name="college_id">
+                                                    @foreach ($colleges as $college)
+                                                        <option value="{{ $college->id }}">{{ $college->name }}</option>
+                                                    @endforeach
+                                                </select> 
+                                                <div class="input-group mb-3 mt-3">
+                                                    <div class="input-group-prepend">
+                                                    <span class="input-group-text bg-white"><i class="fas fa-search text-primary"></i></span>
+                                                    </div>
+                                                    <input type="text" class="form-control" id="searchInput" placeholder="Please enter course name" aria-label="Username" aria-describedby="basic-addon1">
+                                                </div>
+                                            </div>
+                                        @endif
                                         <div class="table-responsive mt-5">
                                             <table class="table table-striped text-center" id="cs">
                                                 <thead>
@@ -55,7 +65,11 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody id="courses">
-                                                    @php $count = 1; @endphp
+                                                    @if ( $id_course != 0 )
+                                                        @php
+                                                            $courses = [\App\Models\Course::find( $id_course )];
+                                                        @endphp
+                                                    @endif
                                                     @foreach ( $courses as $course )
                                                         <tr class="row_course">
                                                             <td class="align-middle"> {{ $count }} </td>
@@ -70,13 +84,13 @@
                                                                 </form>
                                                             </td>
                                                         </tr>  
-                                                        
                                                     @endforeach
-                                                   
-                                                   
                                                 </tbody>
                                             </table>
                                         </div>
+
+                                        
+                                       
                                     </div>
 
 								</div>

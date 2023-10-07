@@ -18,8 +18,8 @@
                 </div>
             </div>
         </td>
-        <td> {{ $user->universityID }} </td>
-        <td> {{ $user->classNum }} </td>
+        <td> {{ $user->email }} </td>
+        <td> {{ $user->country }} </td>
         <td> <b> {{ $user->role }} </b> </td>
         <td>
             @if ($isTrashed)
@@ -31,10 +31,10 @@
         <td style="width: 15%;">
             @if ( ! $isTrashed )
                 @if ($user->role == "student")
-                    <form action="{{ route('users.changeRole',['user' => $user->id , 'type' => 'supervisor']) }}" onsubmit="return false;" class="makeSupervisor w-100" method="POST">
+                    <form action="" onsubmit="return false;" class="makeSupervisor w-100" method="POST">
                         @csrf
                         @method('PUT')
-                        <button class="btn btn-sm btn-primary w-100"> <i class="fa-solid fa-pen-to-square"></i> Make it supervisor </button>
+                        <a href="{{ $user }}" class="btn btn-sm btn-primary text-white btnMakeSupervisor w-100" data-toggle="modal" data-target=".modalSupervisor"> <i class="fa-solid fa-pen-to-square"></i> Make it supervisor </a>
                     </form>
                 @elseif ($user->role == "supervisor")
                     <form action="{{ route('users.changeRole',['user' => $user->id , 'type' => 'student']) }}" onsubmit="return false;" class="makeUser w-100" method="POST">
@@ -48,10 +48,10 @@
                         <button class="btn btn-sm btn-danger w-100"> <i class="fa-solid fa-pen-to-square"></i> Make it admin </button>
                     </form>
                 @else
-                    <form action="{{ route('users.changeRole',['user' => $user->id , 'type' => 'supervisor']) }}" onsubmit="return false;" class="makeSupervisor w-100" method="POST">
+                    <form action="" onsubmit="return false;" class="makeSupervisor w-100" method="POST">
                         @csrf
                         @method('PUT')
-                        <button class="btn btn-sm btn-primary w-100"> <i class="fa-solid fa-pen-to-square"></i> Make it supervisor </button>
+                        <a href="{{ $user }}" class="btn btn-sm btn-primary btnMakeSupervisor w-100" data-toggle="modal" data-target=".modalSupervisor"> <i class="fa-solid fa-pen-to-square"></i> Make it supervisor </a>
                     </form>
                 @endif
 

@@ -41,8 +41,8 @@
                                                     <tr>
                                                         <th>  </th>
                                                         <th> <b> Name </b> </th>
-                                                        <th> <b> University ID </b>  </th>
-                                                        <th> <b> Class Number </b>  </th>
+                                                        <th> <b> Email </b>  </th>
+                                                        <th> <b> County </b>  </th>
                                                         <th> <b> Role </b>  </th>
                                                         <th> <b> Date created </b>  </th>
                                                         <th>  </th>
@@ -75,6 +75,52 @@
 @endsection
 
 @section('modal')
+<div class="modal modalSupervisor" id="modalSupervisor" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"> <i class="fa-solid fa-key"></i> Permissions </h5>
+                <div class="float-left">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </div>
+ 
+            <div class="modal-body">
+                <form action="" id="formSetPermissions" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    @method('PUT')
+                    <div class="">
+                        <label style="display: flex;align-items: center;"><input type="checkbox" name="colleges" id="check_colleges" class="mr-1" style="flex: none; height: 25px; width: 25px;"  /> Colleges </label>
+                    </div>
+                    <div class="mt-4">
+                        <label style="display: flex;align-items: center;"><input type="checkbox"  name="questions_complaints" id="check_questions_complaints"  class="mr-1" style="flex: none; height: 25px; width: 25px;"  /> Questions And Complaints </label>
+                    </div>
+                    <div class="mt-4">
+                        <label style="display: flex;align-items: center;"><input type="checkbox" name="course" id="check_course" class="mr-1" style="flex: none; height: 25px; width: 25px;"  /> Course </label>
+                        <div>
+                            <select class="form-control" id="course_id" name="course_id">
+                                <option>Select Course</option>
+                                @foreach ($courses as $course)
+                                    <option value="{{ $course->id }}">{{ $course->name }} / {{ $course->college->name }}</option>
+                                @endforeach
+                            </select> 
+                            {{-- <select class="mt-2" id="course_id" name="course_id">
+                                <option> Select course </option>
+                            </select>  --}}
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <br/>
+            <div class="modal-footer"> 
+                <button type="button" class="btn btn-primary" id="btnSetPermissions"> <i class="fas fa-save"></i>  Save  </button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"> <i class="fa-solid fa-xmark"></i>  Close </button>
+            </div>
+        </div>
+    </div>
+</div>
 
 @endsection
 

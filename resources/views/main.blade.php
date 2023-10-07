@@ -1,6 +1,6 @@
 @extends('layouts.header')
 
-@section('title','Ask and answer An-Najah University students')
+@section('title','CampusLink - Main')
 
 @section('body')
 
@@ -33,10 +33,10 @@
 												<a href="timeline-friends.html" title="">Activites</a>
 											</li>
 											<li>
-												<form id="logout-form" action="{{ route('logout') }}" method="POST">
+												<form class="logout-form" action="{{ route('logout') }}" method="POST">
 													@csrf
 													<i class="fa-solid fa-right-from-bracket"></i>
-													<a href="#" id="btnLogout"> Logout </a>
+													<a href="#" class="btnLogout"> Logout </a>
 												</form>
 											</li>
 										</ul>

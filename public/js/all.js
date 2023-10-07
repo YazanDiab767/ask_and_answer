@@ -6,9 +6,9 @@ $(document).ready(function(){
         }
     });
     
-    $('#btnLogout').on('click', function(e){
+    $('.btnLogout').on('click', function(e){
         e.preventDefault();
-        $("#logout-form").submit();
+        $(".logout-form").submit();
     });
 
 });

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Question;
+use App\Models\Operation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -74,6 +75,13 @@ class QuestionsController extends Controller
                 "note" => $request->note
             ]);
 
+            Operation::create([
+                'user_id' => auth()->user()->id,
+                'type' => 'suspended',
+                'details' => ' Stopped question : ' . $question_id
+            ]);
+
+
             $question->save();
             $question->delete();
 
@@ -90,6 +98,14 @@ class QuestionsController extends Controller
             $question->active = 1;
             $question->save();
             $question->restore();
+
+            
+            Operation::create([
+                'user_id' => auth()->user()->id,
+                'type' => 'suspended',
+                'details' => ' Returned question :  ' . $question_id
+            ]);
+
 
             // NotificationsController::setReturnQuestion( $question_id );
 
