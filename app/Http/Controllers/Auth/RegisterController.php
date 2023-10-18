@@ -71,7 +71,10 @@ class RegisterController extends Controller
             'role' => 'student',
             'password' => Hash::make($data['password']),
             'country' => $data['country'],
-            'image' => '/storage/users/user.png'
+            'image' => '/users/user.png',
+            'savedQuestions' => '',
+            'courses' => '',
+            'permissions' => '{}'
         ]);
     }
 }

@@ -46,7 +46,7 @@
                                                             - Number of courses : <b> {{ count( $college->courses ) }} </b>
                                                         </label>
                                                         <hr>
-                                                        <a href="{{ route('colleges.show' , $college->id) }}" class="btn btn-sm btn-primary text-white w-100"> <i class="fa-solid fa-arrow-up-right-from-square"></i> Enter </a>
+                                                        <a href="{{ route('colleges.college' , $college->id) }}" class="btn btn-sm btn-primary text-white w-100"> <i class="fa-solid fa-arrow-up-right-from-square"></i> Enter </a>
                                                     </p>
                                                 </div>
                                             </div>

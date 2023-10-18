@@ -56,7 +56,7 @@
                                                         <b>-</b> Date created : <b> {{ date('d-m-Y', strtotime($course->created_at)) }}  </b> 
                                                     </p>
                                                     <hr>
-                                                    <a href="{{ route('courses.show' , $course->id) }}" class="btn btn-primary w-100 text-white"> <i class="fa-solid fa-braille"></i> Visit </a>
+                                                    <a href="{{ route('courses.course' , $course->id) }}" class="btn btn-primary w-100 text-white"> <i class="fa-solid fa-braille"></i> Visit </a>
                                                 </div>
                                               </div>
                                             @php

@@ -27,13 +27,11 @@ class ComplaintsController extends Controller
         {
             $request->validate([
                 'type' => 'required'
-            ],[
-                'type.required' => 'يجب تحديد نوع الابلاغ'
             ]);
 
             Complaint::create([
                 'user_id' => auth()->user()->id,
-                'type' => Complaint::$types[ $request->type ],
+                'type' => $request->type,
                 'text' => ''.$request->text,
                 'question_id' => $question
             ]);

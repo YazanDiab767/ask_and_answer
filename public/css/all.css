@@ -1,3 +1,29 @@
 .btn{
     text-transform: none !important;
 }
+
+.notification{
+    /* border: 1px solid #088dcd; */
+    /* padding: 8px;
+    border-radius: 15px; */
+
+}
+.notification img{
+    border-radius: 50%; border: 1px solid black;
+    min-width: 50px; min-height: 50px; max-width: 50px; max-height: 50px;
+}
+.notification p{
+    margin-left: 58px;
+}
+
+.notifications_menu img{
+    min-width: 25px; min-height: 25px; max-width: 25px; max-height: 25px;
+}
+
+.notification .we-comment:before {
+    content: none;
+}
+
+.notification .we-comment:after {
+    content: none;
+}

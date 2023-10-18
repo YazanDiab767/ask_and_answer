@@ -23,6 +23,8 @@ class CreateUsersTable extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->text('permissions')->nullable();
+            $table->text('savedQuestions'); // questions saved by user
+            $table->text('courses'); // courses would like to see its questions
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

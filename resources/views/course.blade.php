@@ -58,9 +58,12 @@
                                                         <figure>
                                                             <img src="{{ asset('images/user.png') }}" alt="">
                                                         </figure>
+                                                        {{-- form post --}}
                                                         <div class="newpst-input">
-                                                            <form method="post">
-                                                                <textarea rows="2" placeholder="write a new question"></textarea>
+                                                            <form action="{{ route('questions.store') }}" method="POST" id="form_new_question" enctype="multipart/form-data">
+                                                                @csrf
+                                                                <input type="hidden" name="course" value="{{ $course->id }}">
+                                                                <textarea rows="2" placeholder="Write a text of question" name="text" required></textarea>
 
                                                                 <div class="attachments">
                                                                     <ul>
@@ -85,7 +88,7 @@
                                                                         <li>
                                                                             <i class="fa fa-camera"></i>
                                                                             <label class="fileContainer">
-                                                                                <input type="file">
+                                                                                <input type="file" name="image" id="image">
                                                                             </label>
                                                                         </li>
                                                                         <li>
@@ -93,64 +96,20 @@
                                                                         </li>
                                                                     </ul>
                                                                 </div>
+
+                                                                <div id="result_form_question" class="text-left">
+                                                                </div>
                                                             </form>
                                                         </div>
                                                     </div>
                                                 </div>
 
-                                                <div class="loadMore">
-                                                    <div class="central-meta item">
-                                                        <div class="user-post">
-                                                            <div class="friend-info">
-                                                                <figure>
-                                                                    <img src="{{ asset('images/user.png') }}" alt="">
-                                                                </figure>
-                                                                <div class="friend-name">
-                                                                    <ins><a href="time-line.html" title="">Yazan Diab</a></ins>
-                                                                    <span>published: june,2 2033 19:PM</span>
-                                                                </div>
-                                                                <div class="post-meta">
-                                                                    <div class="description">
-                                                                        <p>
-                                                                            this is a test post for my new website in 2023
-                                                                        </p>
-                                                                    </div>
-                                                                    <div class="we-video-info">
-                                                                        <ul>
-                                                                            <li>
-                                                                                <span class="views" data-toggle="tooltip" title="views">
-                                                                                    <i class="fa fa-eye"></i>
-                                                                                    <ins>1.2k</ins>
-                                                                                </span>
-                                                                            </li>
-                                                                            <li>
-                                                                                <span class="comment" data-toggle="tooltip" title="Comments">
-                                                                                    <i class="fa-solid fa-comments"></i>
-                                                                                    <ins>52</ins>
-                                                                                </span>
-                                                                            </li>
-                                                                            <li>
-                                                                                <span class="like" data-toggle="tooltip" title="like">
-                                                                                    <i class="fa-solid fa-thumbs-up"></i>
-                                                                                    <ins>2.2k</ins>
-                                                                                </span>
-                                                                            </li>
-                                                                            <li>
-                                                                                <span class="dislike" data-toggle="tooltip" title="dislike">
-                                                                                    <i class="fa-solid fa-thumbs-down"></i>
-                                                                                    <ins>200</ins>
-                                                                                </span>
-                                                                            </li>
-                                                                        
-                                                                        </ul>
-                                                                    </div>
-                                                                
-                                                                </div>
-                                                            </div>
-                                                           
-                                                        </div>
-                                                    </div>
-                                                    </div>
+                                                <div id="posts" class="loadMore">
+                                                                                  
+                                                </div>
+                                                <div class="row justify-content-center pb-3">
+                                                    <a class="btn btn-primary btnGetMoreQuestion text-white"> <i class="fa-brands fa-get-pocket"></i> Show More </a>
+                                                </div>
                                             </div>
                                             
                                         </div>	
@@ -182,24 +141,40 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <th scope="row">1</th>
-                <td>Exam 2019</td>
-                <td><a href="#" class="text-primary"><i class="fa-solid fa-file"></i> Download </a></td>
-              </tr>
-              <tr>
-                <th scope="row">2</th>
-                <td>Book of material</td>
-                <td><a href="#" class="text-primary"><i class="fa-solid fa-file"></i> Download </a></td>
-              </tr>
+            @php
+                $resources = \App\Models\Resource::where('course_id',$course->id)->get();
+                $i = 0;
+            @endphp
+            @foreach ($resources as $resource)
+                <tr>
+                    <th scope="row">{{ ++$i }}</th>
+                    <td>{{ $resource->title }}</td>
+                    <td><a href="/storage/{{ $resource->file }}" target="_blank" class="text-primary"><i class="fa-solid fa-file"></i> Download </a></td>
+              </tr> 
+            @endforeach
+          
+
             </tbody>
           </table>
       </div>
     </div>
-  </div>
-@endsection
+</div>
+
+  
+
+
+  @endsection
+
 
 @section('script')
 @parent
     <script src=" {{ asset('js/colleges.js') }} "></script>
+    <script src=" {{ asset('js/questions.js') }} "></script>
+    <script src=" {{ asset('js/comments.js') }} "></script>
+    <script>
+        var course = {{ $course->id }};
+        var user_id = {{ auth()->user()->id  }};
+        var savedQuestions = '{{ auth()->user()->savedQuestions }}';
+        var count_comments = 0;
+    </script>
 @endsection

@@ -6,6 +6,7 @@ use App\Models\Course;
 use App\Models\College;
 use App\Models\Resource;
 use App\Models\Operation;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -21,6 +22,22 @@ class CoursesController extends Controller
         return view('course',[
             'course' => $course
         ]);
+    }
+
+    // add course to user
+    public function addUserCourses(Request $request)
+    {
+        if ($request->ajax())
+        {
+            $user = User::find( auth()->user()->id );
+            if ( ! isset ( $request->courses ) )
+            {
+                $user->courses = '';
+            } else if ( count ( $request->courses ) <= 10 ) {
+                $user->courses = implode(',' , $request->courses);
+            }
+            $user->save();
+        }
     }
 
     // D A S H - B O A R D

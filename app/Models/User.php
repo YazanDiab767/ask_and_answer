@@ -18,7 +18,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'role' , 'country'
+        'name', 'email', 'password', 'role' , 'country' , 'savedQuestions' , 'image' ,'courses' , 'permissions'
     ];
 
     /**
@@ -63,13 +63,18 @@ class User extends Authenticatable
         return $this->hasMany(\App\Models\Resource::class);
     }
 
-    // public function comments()
-    // {
-    //     return $this->hasMany('App\Comment');
-    // }
+    public function comments()
+    {
+        return $this->hasMany(\App\Models\Comment::class);
+    }
 
-    // public function notifications()
-    // {
-    //     return $this->hasMany('App\Notification');
-    // }
+    public function likes()
+    {
+        return $this->hasMany(\App\Models\Like::class);
+    }
+
+    public function notifications()
+    {
+        return $this->hasMany(\App\Models\Notification::class);
+    }
 }

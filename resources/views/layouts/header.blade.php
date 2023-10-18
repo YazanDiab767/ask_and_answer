@@ -37,7 +37,7 @@
             </li>
             <hr>
             <li>
-                <span> <a href="#" title=""><i class="fa-solid fa-user"></i> My Profile</a> </span>
+                <span> <a href="{{ route('users.profile' , auth()->user()->id) }}" title=""><i class="fa-solid fa-user"></i> My Profile</a> </span>
             </li>
             <hr>
             <li>
@@ -45,7 +45,7 @@
             </li> 
             <hr>
             <li>
-                <span> <a href="#" title=""><i class="fa-solid fa-circle-question"></i> My questions</a> </span>
+                <span> <a href="{{ route('users.settings') }}" title=""><i class="fa fa-cogs"></i>Settings</a> </span>
             </li>
             <hr>
             <li>
@@ -53,7 +53,7 @@
             </li>
             <hr>
             <li>
-                <span> <a href="#" title=""><i class="fa-solid fa-gear"></i> Settings </a> </span>
+                <span> <a href="{{ route('users.settings') }}" title=""><i class="fa-solid fa-gear"></i> Settings </a> </span>
             </li>
             <hr>
             <li>
@@ -65,7 +65,7 @@
             {{-- <a href="#" title=""><span class="status f-online"></span> online</a> --}}
         </ul>
     </nav>
-    <nav id="shoppingbag">
+    {{-- <nav id="shoppingbag">
         <div>
             <div class="">
                 <form method="post">
@@ -130,7 +130,7 @@
                 </form>
             </div>
         </div>
-    </nav>
+    </nav> --}}
 </div>
 
 {{-- header --}}
@@ -148,13 +148,13 @@
                 <a href="{{ route('main') }}" class="text-white" ><i class="fa-solid fa-house"></i> Home</a>
             </li>
             <li>
-                <a href="#" class="text-white"><i class="fa-solid fa-user"></i> My Profile</a>
+                <a href="{{ route('users.profile' , auth()->user()->id) }}" class="text-white"><i class="fa-solid fa-user"></i> My Profile</a>
             </li>
             <li>
                 <a href="{{ route('colleges.showAll') }}" class="text-white"><i class="fa-solid fa-building"></i> Colleges</a>
             </li>
             <li>
-                <a href="#" class="text-white"><i class="fa-solid fa-circle-question"></i> My questions</a>
+                <a href="{{ route('users.settings') }}" class="text-white"><i class="fa fa-cogs"></i> Settings</a>
             </li>
         </ul>
         <ul class="setting-area">
@@ -168,71 +168,16 @@
                     </form>
                 </div>
             </li>
-            <li><a href="{{ route('main') }}" class="text-white" data-ripple=""><i class="fa-solid fa-house"></i></a></li>
+            <li><a href="{{ route('main') }}" onclick="window.location.assign(`/main`)" class="text-white" data-ripple=""><i class="fa-solid fa-house"></i></a></li>
             <li>
                 <a href="#" class="text-white" data-ripple="">
-                    <i class="fa-solid fa-bell"></i><span>20</span>
+                    <i class="fa-solid fa-bell"></i><span class="text-white">{{ \App\Models\Notification::getNumberNewNotifications() }}</span>
                 </a>
                 <div class="dropdowns">
-                    <span>4 New Notifications</span>
-                    <ul class="drops-menu">
-                        <li>
-                            <a href="notifications.html" title="">
-                                <img src="{{ asset('images/user.png') }}" alt="">
-                                <div class="mesg-meta">
-                                    <h6>sarah Loren</h6>
-                                    <span>Hi, how r u dear ...?</span>
-                                    <i>2 min ago</i>
-                                </div>
-                            </a>
-                            <span class="tag green">New</span>
-                        </li>
-                        <li>
-                            <a href="notifications.html" title="">
-                                <img src="{{ asset('images/user.png') }}" alt="">
-                                <div class="mesg-meta">
-                                    <h6>Jhon doe</h6>
-                                    <span>Hi, how r u dear ...?</span>
-                                    <i>2 min ago</i>
-                                </div>
-                            </a>
-                            <span class="tag red">Reply</span>
-                        </li>
-                        <li>
-                            <a href="notifications.html" title="">
-                                <img src="{{ asset('images/user.png') }}" alt="">
-                                <div class="mesg-meta">
-                                    <h6>Andrew</h6>
-                                    <span>Hi, how r u dear ...?</span>
-                                    <i>2 min ago</i>
-                                </div>
-                            </a>
-                            <span class="tag blue">Unseen</span>
-                        </li>
-                        <li>
-                            <a href="notifications.html" title="">
-                                <img src="{{ asset('images/user.png') }}" alt="">
-                                <div class="mesg-meta">
-                                    <h6>Tom cruse</h6>
-                                    <span>Hi, how r u dear ...?</span>
-                                    <i>2 min ago</i>
-                                </div>
-                            </a>
-                            <span class="tag">New</span>
-                        </li>
-                        <li>
-                            <a href="notifications.html" title="">
-                                <img src="{{ asset('images/user.png') }}" alt="">
-                                <div class="mesg-meta">
-                                    <h6>Amy</h6>
-                                    <span>Hi, how r u dear ...?</span>
-                                    <i>2 min ago</i>
-                                </div>
-                            </a>
-                            <span class="tag">New</span>
-                        </li>
+                    <span>{{ \App\Models\Notification::getNumberNewNotifications() }} New Notifications</span>
+                    <ul class="drops-menu notifications notifications_menu" id="">
                     </ul>
-                    <a href="notifications.html" class="more-mesg">view more</a>
+                    <a href="" onclick="window.location.assign(`/notifications`)" class="more-mesg">view more</a>
                 </div>
             </li>
             <li><a href="#" class="text-white"><i class="fa fa-globe"></i></a>
@@ -249,13 +194,13 @@
             @endif
         </ul>
         <div class="user-img">
-            <img src="{{ asset('images/user.png') }}" width="50" height="50" alt="">
+            <img src="/storage/{{  auth()->user()->image }}" style="min-width: 60px; min-height: 60px; max-width: 60px; max-height: 60px;">
             <span class="status f-online"></span>
             <div class="user-setting">
                 <a href="#" title=""><span class="status f-online"></span> online </a>
-                <a href="#" title=""><i class="fa-solid fa-user"></i> view profile </a>
+                <a href="" onclick="window.location.assign(`/profile/${user_id}`)"><i class="fa-solid fa-user"></i> view profile </a>
                 <a href="#" title=""><i class="fa-solid fa-chart-line"></i> activity log </a>
-                <a href="#" title=""><i class="fa-solid fa-gear"></i> settings </a>
+                <a href="" onclick="window.location.assign('/settings')" title=""><i class="fa-solid fa-gear"></i> settings </a>
                 <a href="#" class="btnLogout"><i class="fa-solid fa-right-from-bracket"></i> Logout </a>
             </div>
         </div>
@@ -390,8 +335,12 @@
 
 @section('script')
 @parent
-	<script src="{{ asset('js/main.min.js') }}"></script>
-    <script src="{{ asset('js/map-init.js') }}"></script>
+	{{-- <script src="{{ asset('js/main.min.js') }}"></script> --}}
+    {{-- <script src="{{ asset('js/map-init.js') }}"></script> --}}
+    <script>
+        var user_id = {{ auth()->user()->id  }};
+    </script>
+    <script src="{{ asset('js/notifications.js') }}"></script>
     <script src="{{ asset('js/all.js') }}"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA8c55_YHLvDHGACkQscgbGLtLRdxBDCfI"></script>
+    {{-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA8c55_YHLvDHGACkQscgbGLtLRdxBDCfI"></script> --}}
 @endsection

@@ -2,6 +2,16 @@
 
 @section('title','CampusLink - Main')
 
+@section('style')
+	@parent
+	<link rel="stylesheet" href="{{ asset('css/select2.min.css') }}" />
+	<style>
+		.select2-search__field, .select2-container{
+			width: 100% !important;
+		}
+	</style>
+@endsection
+
 @section('body')
 
 <div class="theme-layout">
@@ -75,37 +85,39 @@
 							<div class="col-lg-6">
 								<div class="central-meta">
 									<div class="new-postbox">
-										<figure>
-											<img src="{{ asset('images/user.png') }}" alt="">
-										</figure>
-										<div class="newpst-input">
-											<form method="post">
-												<textarea rows="2" placeholder="write a new question"></textarea>
+										{{-- <figure>
+											<img src="/storage/{{  auth()->user()->image }}" style="min-width: 80px; min-height: 80px; max-width: 80px; max-height: 80px;">
+										</figure> --}}
+										<div class="newpst-input w-100">
+											<form action="{{ route('questions.store') }}" method="POST" id="form_new_question" enctype="multipart/form-data">
+												@csrf
+												<input type="hidden" name="course" value="">
+												<textarea rows="2" placeholder="Write a text of question" name="text" required></textarea>
 
 												<div class="attachments">
 													<ul>
 														<li>
 															<i class="fa fa-music"></i>
 															<label class="fileContainer">
-																<input type="file">
+																<input type="file" class="image">
 															</label>
 														</li>
 														<li>
 															<i class="fa fa-image"></i>
 															<label class="fileContainer">
-																<input type="file">
+																<input type="file" class="image">
 															</label>
 														</li>
 														<li>
 															<i class="fa-solid fa-video"></i>
 															<label class="fileContainer">
-																<input type="file">
+																<input type="file" class="image">
 															</label>
 														</li>
 														<li>
 															<i class="fa fa-camera"></i>
 															<label class="fileContainer">
-																<input type="file">
+																<input type="file" name="image" class="image">
 															</label>
 														</li>
 														<li>
@@ -113,113 +125,32 @@
 														</li>
 													</ul>
 												</div>
+
+												<div class="mt-1">
+													<select class="selectCourse form-control w-100" name="course">
+														@foreach (\App\Models\Course::all() as $course)
+															<option value="{{ $course->id }}" selected> {{ $course->name }} / {{ $course->college->name }} </option>
+															...
+														@endforeach
+													</select>
+												</div>
+
+												<div id="result_form_question" class="text-left">
+												</div>
 											</form>
-											<select class="form-control">
-												<option>Course name</option>
-											</select>
+		
 										</div>
 									</div>
 								</div>
 
 								<div class="loadMore">
-									<div class="central-meta item">
-										<div class="user-post">
-											<div class="friend-info">
-												<figure>
-													<img src="{{ asset('images/user.png') }}" alt="">
-												</figure>
-												<div class="friend-name">
-													<ins><a href="time-line.html" title="">Yazan Diab</a></ins>
-													<span>published: june,2 2033 19:PM</span>
-												</div>
-												<div class="post-meta">
-													<div class="description">
-														<p>
-															this is a test post for my new website in 2023
-														</p>
-													</div>
-													<div class="we-video-info">
-														<ul>
-															<li>
-																<span class="views" data-toggle="tooltip" title="views">
-																	<i class="fa fa-eye"></i>
-																	<ins>1.2k</ins>
-																</span>
-															</li>
-															<li>
-																<span class="comment" data-toggle="tooltip" title="Comments">
-																	<i class="fa-solid fa-comments"></i>
-																	<ins>52</ins>
-																</span>
-															</li>
-															<li>
-																<span class="like" data-toggle="tooltip" title="like">
-																	<i class="fa-solid fa-thumbs-up"></i>
-																	<ins>2.2k</ins>
-																</span>
-															</li>
-															<li>
-																<span class="dislike" data-toggle="tooltip" title="dislike">
-																	<i class="fa-solid fa-thumbs-down"></i>
-																	<ins>200</ins>
-																</span>
-															</li>
-														
-														</ul>
-													</div>
-												
-												</div>
-											</div>
-											<div class="coment-area">
-												<ul class="we-comet">
-													<li>
-														<div class="comet-avatar">
-															<img src="{{ asset('images/user.png') }}" width="60" alt="">
-														</div>
-														<div class="we-comment">
-															<div class="coment-head">
-																<h5><a href="time-line.html" title="">Jihad</a></h5>
-																<span>1 year ago</span>
-																<a class="we-reply" href="#" title="Reply"><i class="fa fa-reply"></i></a>
-															</div>
-															<p>test a new comment .... </p>
-														</div>
-														<ul>
-															<li>
-																<div class="comet-avatar">
-																	<img src="{{ asset('images/user.png') }}" width="50">
-																</div>
-																<div class="we-comment">
-																	<div class="coment-head">
-																		<h5><a href="time-line.html" title="">Yazan Diab</a></h5>
-																		<span>1 month ago</span>
-																		<a class="we-reply" href="#" title="Reply"><i class="fa fa-reply"></i></a>
-																	</div>
-																	<p>welcome to our website</p>
-																</div>
-															</li>
-														</ul>
-													</li>
-										
-													<li>
-														<a href="#" title="" class="showmore underline">more comments</a>
-													</li>
-													<li class="post-comment">
-														<div class="comet-avatar">
-															<img src="{{ asset('images/user.png') }}" width="60">
-														</div>
-														<div class="post-comt-box">
-															<form method="post">
-																<textarea placeholder="Post your comment"></textarea>
-																<button type="submit"></button>
-															</form>	
-														</div>
-													</li>
-												</ul>
-											</div>
-										</div>
+									<div id="posts" class="central-meta item">
+
 									</div>
+									<div class="row justify-content-center pb-3">
+										<a class="btn btn-primary btnGetMoreQuestion text-white"> <i class="fa-brands fa-get-pocket"></i> Show More </a>
 									</div>
+								</div>
 							</div>
 							
 							<div class="col-lg-3">
@@ -228,11 +159,11 @@
 										<h4 class="widget-title">Info</h4>	
 										<div class="your-page">
 											<figure>
-												<a href="#" title=""><img src="{{ asset('images/user.png') }}" alt=""></a>
+												<a href="#" title=""> <img src="/storage/{{  auth()->user()->image }}" style="min-width: 60px; min-height: 60px; max-width: 60px; max-height: 60px;"> </a>
 											</figure>
 											<div class="page-meta">
-												<span><i class="fa-solid fa-circle-question"></i><a href="insight.html">Questions <em>9</em></a></span>
-												<span><i class="fa-solid fa-envelope"></i><a href="insight.html">Notifications <em>2</em></a></span>
+												<span><i class="fa-solid fa-circle-question"></i><a href="">Questions <em> {{ auth()->user()->questions()->count() }}</em></a></span>
+												<span><i class="fa-solid fa-bell"></i><a href="/notifications">Notifications <em> {{ \App\Models\Notification::getNumberNewNotifications() }} </em></a></span>
 											</div>
 											<div class="page-likes">
 												<ul class="nav nav-tabs likes-btn">
@@ -242,10 +173,10 @@
 												<!-- Tab panes -->
 												<div class="tab-content">
 												  <div class="tab-pane active fade show " id="link1" >
-													<span>884</span>
+													<span>{{ \App\Models\Like::where('user_id',auth()->user()->id)->count() }}</span>
 												  </div>
 												  <div class="tab-pane fade" id="link2" >
-													  <span>440</span>
+													  <span>{{ \App\Models\Comment::where('user_id',auth()->user()->id)->count() }}</span>
 												  </div>
 												</div>
 											</div>
@@ -263,7 +194,7 @@
 													Select your courses
 												</p>
 												<span>to get notifications for any updates on them</span>
-												<a data-ripple="" title="" href="#">Select</a>
+												<a  href="#" data-toggle="modal" data-target=".modalSelectCourses">Select</a>
 											</div>
 										</div>											
 									</div>
@@ -278,4 +209,51 @@
 	</section>
 </div>
 
+@endsection
+
+@section('modal')
+<div class="modal fade modalSelectCourses" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+	  <div class="modal-content p-4">
+		<h4> <i class="fa-solid fa-swatchbook"></i> Select Your Courses </h4>
+		<hr>
+		<form action="{{ route('courses.addUserCourses') }}" class="w-100" method="POST" id="formSelectCourses">
+			@csrf
+			<div class="form-group w-100">
+				<label>Your courses:</label>
+				<select class="multiple-select selectCourses form-control w-100" name="courses[]" multiple="multiple">
+					@php
+						$userCourses = explode(',' , auth()->user()->courses);	
+					@endphp
+					@foreach (\App\Models\Course::all() as $course)
+						@if ( in_array( $course->id , $userCourses) )
+							<option value="{{ $course->id }}" selected> {{ $course->name }} / {{ $course->college->name }} </option>
+							...
+						@else
+							<option value="{{ $course->id }}"> {{ $course->name }} / {{ $course->college->name }} </option>
+							...
+						@endif
+					@endforeach
+				</select>
+			</div>
+			<div class="float-right">
+				<button class="btn btn-success w-100"> <i class="fa-solid fa-floppy-disk"></i> Save </button>
+			</div>
+		</form>
+	  </div>
+	</div>
+  </div>
+@endsection
+
+@section('script')
+@parent
+    <script src=" {{ asset('js/select2.min.js') }} "></script>
+	<script src=" {{ asset('js/comments.js') }} "></script>
+	<script src=" {{ asset('js/courses.js') }} "></script>
+	<script>
+        // var course = {{ $course->id }};
+        var user_id = {{ auth()->user()->id  }};
+        var savedQuestions = '{{ auth()->user()->savedQuestions }}';
+        var count_comments = 0;
+    </script>
 @endsection

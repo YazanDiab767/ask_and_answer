@@ -6,10 +6,86 @@ use Illuminate\Http\Request;
 use \App\Models\User;
 use \App\Models\Course;
 use \App\Models\Operation;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Hash;
 
 
 class UsersController extends Controller
 {
+
+    public function profile(User $user)
+    {
+        return view('profile');
+    }
+
+    public function settings()
+    {
+        return view('settings');
+    }
+
+    //update image
+    public function updateImage(Request $request)
+    {
+        if ($request->ajax())
+        {
+            $request->validate([
+                'image' => 'required'
+            ]);
+
+            $user = User::find( auth()->user()->id );
+
+            if ($user->image != "/users/user.png")
+            {
+                //delete old image
+                if(Storage::disk('public')->exists( $user->image ))
+                    Storage::delete('public/' . $user->image );
+            }
+            
+            //save new image
+            $user->image = $request->image->store('users','public');
+            $user->save();
+        }
+    }
+    
+    public function update(Request $request , $type) //update data of user
+    {
+        if ($request->ajax())
+        {
+            if ( $type == 'name' )
+                $validator = \Validator::make($request->all(),[
+                    'name' => ['required', 'string', 'max:20'],
+                    'password' => 'required'
+                ]);
+            else if ( $type == 'email' )
+                $validator = \Validator::make($request->all(),[
+                    'email' => ['required', 'email', 'unique:users'],
+                    'password' => 'required'
+                ]);
+            else if ( $type == 'password' )
+                $validator = \Validator::make($request->all(),[
+                    'newPassword' => ['required', 'string', 'min:8'],
+                    'password' => 'required'
+                ]);
+            
+           
+            $validator->after(function ($validator) use($request) {
+                if (!Hash::check($request->password , auth()->user()->password) )
+                    $validator->errors()->add('error', 'Your password is invalid !');
+            });
+            
+           $validator->validate();
+
+           if ( $type == 'password' )
+                $request[$type] = Hash::make($request->newPassword);
+
+
+           $user = User::find( auth()->user()->id  );
+           $user[$type] = $request[$type];
+           $user->save();
+        }
+    }
+
+    // D A S H - B O A R D
 
     public function index()
     {
@@ -145,35 +221,6 @@ class UsersController extends Controller
         }
     }
 
-
-    public function create()
-    {
-        //
-    }
-
-
-    public function store(Request $request)
-    {
-        //
-    }
-
-
-    public function show($id)
-    {
-        //
-    }
-
-
-    public function edit($id)
-    {
-        //
-    }
-
-
-    public function update(Request $request, $id)
-    {
-        //
-    }
 
     //delete user
     public function destroy(Request $request, $id)

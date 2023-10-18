@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateQuestionsTable extends Migration
+class CreateCommentsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,26 +13,26 @@ class CreateQuestionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('questions', function (Blueprint $table) {
+        Schema::create('comments', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('course_id');
+            $table->unsignedBigInteger('question_id');
             $table->longText('text');
             $table->text('image');
-            $table->boolean('active')->default( false );
-            $table->boolean('stop_comments')->default( false ); // stop comments for question by owner question
-            $table->text('note'); // supervisor note on this question
+            $table->integer('replyTo')->default(0);
+            $table->text('replyToUsername')->nullable();
+            $table->boolean('best_answer');
             $table->timestamps();
-            $table->softDeletes();
 
+            
             $table->foreign('user_id')
             ->references('id')
             ->on('users')
             ->onDelete('cascade');
 
-            $table->foreign('course_id')
+            $table->foreign('question_id')
             ->references('id')
-            ->on('courses')
+            ->on('questions')
             ->onDelete('cascade');
         });
     }
@@ -44,6 +44,6 @@ class CreateQuestionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('questions');
+        Schema::dropIfExists('comments');
     }
 }

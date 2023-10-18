@@ -6,6 +6,8 @@ use App\Http\Controllers\CoursesController;
 use App\Http\Controllers\QuestionsController;
 use App\Http\Controllers\ComplaintsController;
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\NotificationsController;
+
 
 use App\Models\College;
 /*
@@ -30,14 +32,50 @@ Route::get('/', function () {
 Route::middleware('auth')->group(function () {
 
     Route::get('/main', function () { return view('main'); })->name('main');
+    Route::get('/getNewQuestions', [QuestionsController::class,'showLastQuestions']);
 
     //colleges
     Route::get('/colleges' , [CollegesController::class, 'showAll'])->name('colleges.showAll');
 
     //courses
-    Route::get('/colleges/show/{college}' , [CollegesController::class, 'showAll'])->name('colleges.show');
-    Route::get('/courses/show/{course}' , [CoursesController::class, 'showAll'])->name('courses.show');
+    Route::get('/colleges/{college}' , [CollegesController::class, 'show'])->name('colleges.college');
+    Route::get('/courses/{course}' , [CoursesController::class, 'show'])->name('courses.course');
+    Route::post('/courses/addUserCourses',[CoursesController::class,'addUserCourses'])->name('courses.addUserCourses');
+    // Route::get('/courses/{course}' , [CoursesController::class, 'show'])->name('courses.course');
 
+
+    //questions
+    Route::resource('/questions', QuestionsController::class)->except(['create', 'edit']);
+    Route::get('/questions/get/{course}' , [QuestionsController::class, 'course'])->name('questions.course');
+    Route::get('/questions/getQuestion/{question}' , [QuestionsController::class, 'get'])->name('questions.get');
+    Route::post('/question/delete/{question}' ,[QuestionsController::class,'delete'])->name('question.delete');
+    Route::get('/question/getComments/{question}' ,[QuestionsController::class,'comments'])->name('question.comments');
+    Route::get('/question/getSubComments/{comment}' ,[QuestionsController::class,'subComments'])->name('question.subComments');
+    Route::post('/question/addComment/{question}' ,[QuestionsController::class,'addComment'])->name('question.addComment');
+    Route::post('/question/enableDisableComments/{question}' ,[QuestionsController::class,'enableDisableComments'])->name('question.enableDisableComments');
+    Route::post('/question/saveQuestion/{question}',[QuestionsController::class,'saveQuestion'])->name('question.saveQuestion');
+    Route::post('/question/unsaveQuestion/{question}',[QuestionsController::class,'unsaveQuestion'])->name('question.unsaveQuestion');
+
+    //notifications
+    Route::get('/notifications', [NotificationsController::class,'showNotifications'])->name('notifications');
+    Route::get('/notifications/get', [NotificationsController::class,'get'])->name('notifications.get');
+    Route::post('/notifications/setQuestion/{question}', [NotificationsController::class,'setQuestion'])->name('notifications.setQuestion');
+    // Route::post('/notifications/delete/{notification}', 'NotificationsController@deleteNotification')->name('notifications.delete');
+    // Route::get('/notifications/getMoreNotifications' ,'NotificationsController@getMoreNotifications')->name('notifications.getMoreNotifications');
+    // Route::get('/notifications/getUnreadNotifications','NotificationsController@getUnreadNotifications')->name('notifications.getUnreadNotifications');
+
+    //users
+    Route::get('/profile/{user}',[UsersController::class,'profile'])->name('users.profile');
+    Route::post('/profile/updateImage',[UsersController::class,'updateImage'])->name('profile.updateImage');
+    Route::get('/getUserPosts',[QuestionsController::class,'user'])->name('questions.user');
+    Route::get('/settings',[UsersController::class,'settings'])->name('users.settings');
+    Route::post('/settings/update/{type}',[UsersController::class,'update'])->name('users.settings.update');
+    Route::get('/getUserSavedPosts',[QuestionsController::class,'getSavedQuestions'])->name('questions.getSavedQuestions');
+
+
+
+    //complaints
+    Route::post('/complaints/add/{question}' , [ComplaintsController::class,'add'])->name('complaints.add');
 
     //Control Panel / Dashbaord
     Route::middleware('CheckSupervisor')->group(function () {
