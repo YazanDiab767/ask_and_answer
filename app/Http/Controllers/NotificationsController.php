@@ -83,11 +83,12 @@ class NotificationsController extends Controller
             "note" => $note
         ];
         
-        Notification::create([
+        $n = Notification::create([
             'user_id' => $question->user->id,
             'data' => json_encode( $data ),
             'read' => false
         ]);
+        return $n->load('user');
     }
 
     //set return question
@@ -99,11 +100,12 @@ class NotificationsController extends Controller
         ];
         $question = Question::find($question_id);
         
-        Notification::create([
+        $n = Notification::create([
             'user_id' => $question->user->id,
             'data' => json_encode( $data ),
             'read' => false
         ]);
+        return $n->load('user');
     }
 
     //set all notifications as read to current user

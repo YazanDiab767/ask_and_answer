@@ -2,6 +2,18 @@ $(document).ready(function(){
 
     let page = '';
     let count_page = 1;
+    let flag_new_notification = 0;
+
+    //Listen Notifications
+    Echo.private(`notification.${user_id}`)
+    .listen('NewNotification', (notification) => {
+        $(".currentNotification").html(++count_notifications);
+        flag_new_notification = 1;
+        addNotification( notification.notification );
+        flag_new_notification = 0;
+        for ( let i = 0; i < 5; i++ )
+            $(".fa-bell").fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+    })
 
     function showNotifications()
     {
@@ -42,9 +54,11 @@ $(document).ready(function(){
         else if ( data.type == "return_question" )
             format = formatReturnQuestion( notification );
 
-        $(".notifications").append( format );
+        if ( flag_new_notification == 0 )
+            $(".notifications").append( format );
+        else
+            $(".notifications").prepend( format );
     }
-
 
     function formatReply(notification )
     {
@@ -60,7 +74,7 @@ $(document).ready(function(){
             isNew = `<span class="float-right bg-danger text-white p-1">NEW</span>`;
 
         return `
-            <li onclick="location.assign('/questions/${data.questionID}#')" class="mt-2 notification w-100">
+            <li onclick="location.assign('/questions/${data.questionID}#comment_${data.commentID}')" class="mt-2 notification w-100">
                 <div class="we-comment text-left">
                     <div class="coment-head">
                         <img src="/storage/${data.image}">

@@ -251,7 +251,6 @@
 	<script src=" {{ asset('js/comments.js') }} "></script>
 	<script src=" {{ asset('js/courses.js') }} "></script>
 	<script>
-        // var course = {{ $course->id }};
         var user_id = {{ auth()->user()->id  }};
         var savedQuestions = '{{ auth()->user()->savedQuestions }}';
         var count_comments = 0;

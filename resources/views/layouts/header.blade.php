@@ -65,72 +65,7 @@
             {{-- <a href="#" title=""><span class="status f-online"></span> online</a> --}}
         </ul>
     </nav>
-    {{-- <nav id="shoppingbag">
-        <div>
-            <div class="">
-                <form method="post">
-                    <div class="setting-row">
-                        <span>use night mode</span>
-                        <input type="checkbox" id="nightmode"/> 
-                        <label for="nightmode" data-on-label="ON" data-off-label="OFF"></label>
-                    </div>
-                    <div class="setting-row">
-                        <span>Notifications</span>
-                        <input type="checkbox" id="switch2"/> 
-                        <label for="switch2" data-on-label="ON" data-off-label="OFF"></label>
-                    </div>
-                    <div class="setting-row">
-                        <span>Notification sound</span>
-                        <input type="checkbox" id="switch3"/> 
-                        <label for="switch3" data-on-label="ON" data-off-label="OFF"></label>
-                    </div>
-                    <div class="setting-row">
-                        <span>My profile</span>
-                        <input type="checkbox" id="switch4"/> 
-                        <label for="switch4" data-on-label="ON" data-off-label="OFF"></label>
-                    </div>
-                    <div class="setting-row">
-                        <span>Show profile</span>
-                        <input type="checkbox" id="switch5"/> 
-                        <label for="switch5" data-on-label="ON" data-off-label="OFF"></label>
-                    </div>
-                </form>
-                <h4 class="panel-title">Account Setting</h4>
-                <form method="post">
-                    <div class="setting-row">
-                        <span>Sub users</span>
-                        <input type="checkbox" id="switch6" /> 
-                        <label for="switch6" data-on-label="ON" data-off-label="OFF"></label>
-                    </div>
-                    <div class="setting-row">
-                        <span>personal account</span>
-                        <input type="checkbox" id="switch7" /> 
-                        <label for="switch7" data-on-label="ON" data-off-label="OFF"></label>
-                    </div>
-                    <div class="setting-row">
-                        <span>Business account</span>
-                        <input type="checkbox" id="switch8" /> 
-                        <label for="switch8" data-on-label="ON" data-off-label="OFF"></label>
-                    </div>
-                    <div class="setting-row">
-                        <span>Show me online</span>
-                        <input type="checkbox" id="switch9" /> 
-                        <label for="switch9" data-on-label="ON" data-off-label="OFF"></label>
-                    </div>
-                    <div class="setting-row">
-                        <span>Delete history</span>
-                        <input type="checkbox" id="switch10" /> 
-                        <label for="switch10" data-on-label="ON" data-off-label="OFF"></label>
-                    </div>
-                    <div class="setting-row">
-                        <span>Expose author name</span>
-                        <input type="checkbox" id="switch11" /> 
-                        <label for="switch11" data-on-label="ON" data-off-label="OFF"></label>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </nav> --}}
+
 </div>
 
 {{-- header --}}
@@ -171,10 +106,14 @@
             <li><a href="{{ route('main') }}" onclick="window.location.assign(`/main`)" class="text-white" data-ripple=""><i class="fa-solid fa-house"></i></a></li>
             <li>
                 <a href="#" class="text-white" data-ripple="">
-                    <i class="fa-solid fa-bell"></i><span class="text-white">{{ \App\Models\Notification::getNumberNewNotifications() }}</span>
+                    <i class="fa-solid fa-bell"></i><span class="text-white currentNotification">{{ \App\Models\Notification::getNumberNewNotifications() }}</span>
                 </a>
                 <div class="dropdowns">
-                    <span>{{ \App\Models\Notification::getNumberNewNotifications() }} New Notifications</span>
+                    <span>
+                        <span style="font-size: 18px;"><i class="fa-solid fa-bell"></i>  New Notifications: <b class="currentNotification">{{ \App\Models\Notification::getNumberNewNotifications() }} </b> </span> <br/>
+                        <a href="/notifications" onclick="window.location.assign(`/notifications`)" class="text-primary">Show all notifications</a>
+                    </span>
+                    <br/>
                     <ul class="drops-menu notifications notifications_menu" id="">
                     </ul>
                     <a href="" onclick="window.location.assign(`/notifications`)" class="more-mesg">view more</a>
@@ -339,8 +278,10 @@
     {{-- <script src="{{ asset('js/map-init.js') }}"></script> --}}
     <script>
         var user_id = {{ auth()->user()->id  }};
+        var count_notifications = {{ \App\Models\Notification::getNumberNewNotifications() }};
     </script>
     <script src="{{ asset('js/notifications.js') }}"></script>
     <script src="{{ asset('js/all.js') }}"></script>
     {{-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA8c55_YHLvDHGACkQscgbGLtLRdxBDCfI"></script> --}}
+    <script src="{{ asset('js/app.js') }}"></script>
 @endsection

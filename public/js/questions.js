@@ -1,5 +1,108 @@
-$(document).ready(function(e){
+function addComment(comment)
+{
+    let date_time = new Date(comment.created_at);
+    let image = ``;
+
+    //check if subcomment
+    if ( reply_comment_id != 0 )
+    {
+        let c = comment;
+        let img = '';
+        if ( c.image != '--' )
+            img = `<img src = "/storage/${c.image}" class="mt-2" style="max-width: 250px; max-height: 250px;" /><br/>`;
+        box_comment.append(`
+        <ul id="comment_${c.id}">
+            <li>
+                <div class="comet-avatar">
+                    <img src="/storage/${c.user.image}" width="50">
+                </div>
+                <div class="we-comment">
+                    <div class="coment-head">
+                        <h5><a><i class="fa fa-reply text-primary"></i> ${c.user.name} <b class="text-primary">reply to</b> ${c.replyToUsername}</a></h5>
+                        <span>${ date_time.getFullYear() }/${date_time.getMonth()}/${date_time.getDate()} ${date_time.getHours()}:${date_time.getMinutes()}</span>
+                    </div>
+                    <p>${c.text}</p>
+                    ${img}
+                    <a class="we-reply replyComment" href="${c.user.id}/${c.replyTo}" title="Reply">Reply <i class="fa fa-reply"></i></a>
+                </div>
+            </li>
+        </ul>
+    `);
+        return;
+    }
+
     
+    //check if post has image
+    if ( comment.image != '--' )
+        image = `<img src = "/storage/${comment.image}" class="mt-2" style="max-width: 250px; max-height: 250px;" />`;
+
+    let subComments = ''; 
+    let sub;
+    $.ajaxSetup({async: false});
+
+    //get subcomments
+    $.get(`${host}question/getSubComments/` + comment.id , function (data) {
+        if (Object.keys(data).length > 0 )
+        {
+            // subComments += '<ul>';
+            for (const c of data)
+            {
+                let img = '';
+                let d_t = c.created_at;
+                if ( c.image != '--' )
+                    img = `<img src = "/storage/${c.image}" class="mt-2" style="max-width: 250px; max-height: 250px;" /><br/>`;
+                subComments +=
+                `<ul>
+                    <li>
+                        <div class="comet-avatar">
+                            <img src="/storage/${c.user.image}" width="50">
+                        </div>
+                        <div class="we-comment">
+                            <div class="coment-head">
+                                <h5><a><i class="fa fa-reply text-primary"></i> ${c.user.name} <b class="text-primary">reply to</b> ${c.replyToUsername}</a></h5>
+                                <span>${d_t}</span>
+                            </div>
+                            <p>${c.text}</p>
+                            ${img}
+                            <a class="we-reply replyComment" href="${c.user.id}/${comment.id}" title="Reply">Reply <i class="fa fa-reply"></i></a>
+                        </div>
+                    </li></ul>
+                `;
+            }
+            // subComments += '</ul>';
+        }
+        
+    });
+
+    $("#comments").append(`
+        <li class="box_comment" id="comment_${comment.id}">
+            <div class="comet-avatar">
+                <img src="/storage/${comment.user.image}" width="60" alt="">
+            </div>
+            <div class="we-comment">
+                <div class="coment-head">
+                    <h5><a href="3" title="">${comment.user.name}</a></h5>
+                    <span>${ date_time.getFullYear() }/${date_time.getMonth()}/${date_time.getDate()} ${date_time.getHours()}:${date_time.getMinutes()}</span>
+                </div>
+                <p>${comment.text}</p>
+                ${image}
+                <a class="we-reply replyComment" href="${comment.user.id}/${comment.id}" title="Reply">Reply <i class="fa fa-reply"></i></a>
+            </div>
+            ${ subComments }
+        </li>
+    `);
+
+}
+//for comments and questions
+let page = '';
+let count_page = 1;
+var reply_user_id = 0; // for reply comments
+//global
+let reply_comment_id = 0; // for reply comments
+var box_comment;
+
+$(document).ready(function(e){
+
     $("#btnAddImageToComment").on('click', function(e){
         e.preventDefault();
         $("#image").trigger('click');
@@ -89,13 +192,6 @@ $(document).ready(function(e){
         });
     });
 
-    //for comments and questions
-    let page = '';
-    let count_page = 1;
-    let reply_user_id = 0; // for reply comments
-    let reply_comment_id = 0; // for reply comments
-    let box_comment;
-
     function getQuestions(){
 
         $.get(`${host}questions/get/` + course + page , function (data) {
@@ -111,7 +207,6 @@ $(document).ready(function(e){
         });
     }
     getQuestions();
-
     
     function getComments(){
 
@@ -161,7 +256,6 @@ $(document).ready(function(e){
         page = `/?page=${++count_page}`;
         getComments();
     });
-
 
     function addPost(question)
     {
@@ -278,100 +372,6 @@ $(document).ready(function(e){
 
     }
 
-    function addComment(comment)
-    {
-        let date_time = new Date(comment.created_at);
-        let image = ``;
-
-        //check if subcomment
-        if ( reply_comment_id != 0 )
-        {
-            let c = comment;
-            let img = '';
-            if ( c.image != '--' )
-                img = `<img src = "/storage/${c.image}" class="mt-2" style="max-width: 250px; max-height: 250px;" /><br/>`;
-            box_comment.append(`
-            <ul>
-                <li>
-                    <div class="comet-avatar">
-                        <img src="/storage/${c.user.image}" width="50">
-                    </div>
-                    <div class="we-comment">
-                        <div class="coment-head">
-                            <h5><a><i class="fa fa-reply text-primary"></i> ${c.user.name} <b class="text-primary">reply to</b> ${c.replyToUsername}</a></h5>
-                            <span>${date_time}</span>
-                        </div>
-                        <p>${c.text}</p>
-                        ${img}
-                    </div>
-                </li>
-            </ul>
-        `);
-            return;
-        }
- 
-        
-        //check if post has image
-        if ( comment.image != '--' )
-            image = `<img src = "/storage/${comment.image}" class="mt-2" style="max-width: 250px; max-height: 250px;" />`;
-
-        let subComments = ''; 
-        let sub;
-        $.ajaxSetup({async: false});
-
-        $.get(`${host}question/getSubComments/` + comment.id , function (data) {
-            if (Object.keys(data).length > 0 )
-            {
-                // subComments += '<ul>';
-                for (const c of data)
-                {
-                    let img = '';
-                    if ( c.image != '--' )
-                        img = `<img src = "/storage/${c.image}" class="mt-2" style="max-width: 250px; max-height: 250px;" /><br/>`;
-                    subComments +=
-                    `<ul>
-                        <li>
-                            <div class="comet-avatar">
-                                <img src="/storage/${c.user.image}" width="50">
-                            </div>
-                            <div class="we-comment">
-                                <div class="coment-head">
-                                    <h5><a><i class="fa fa-reply text-primary"></i> ${c.user.name} <b class="text-primary">reply to</b> ${c.replyToUsername}</a></h5>
-                                    <span>${date_time}</span>
-                                </div>
-                                <p>${c.text}</p>
-                                ${img}
-                                <a class="we-reply replyComment" href="${c.user.id}/${comment.id}" title="Reply">Reply <i class="fa fa-reply"></i></a>
-                            </div>
-                        </li></ul>
-                    `;
-                }
-                // subComments += '</ul>';
-            }
-            
-        });
-
-
-        $("#comments").append(`
-            <li class="box_comment">
-                <div class="comet-avatar">
-                    <img src="/storage/${comment.user.image}" width="60" alt="">
-                </div>
-                <div class="we-comment">
-                    <div class="coment-head">
-                        <h5><a href="3" title="">${comment.user.name}</a></h5>
-                        <span>${date_time}</span>
-                    </div>
-                    <p>${comment.text}</p>
-                    ${image}
-                    <a class="we-reply replyComment" href="${comment.user.id}/${comment.id}" title="Reply">Reply <i class="fa fa-reply"></i></a>
-                </div>
-                ${ subComments }
-            </li>
-        `);
-
-    }
-
     $("#formSendComplaint").on('submit', function(e){
         e.preventDefault();
         let url = $(this).attr('action');
@@ -394,8 +394,5 @@ $(document).ready(function(e){
             contentType: false
         });
     });
-    
-
-
 
 });

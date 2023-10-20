@@ -226,5 +226,7 @@
         var question = {{ $question->id }};
         var user_id = {{ auth()->user()->id }};
         var count_comments = {{count($question->comments)}};
+        var savedQuestions = '{{ auth()->user()->savedQuestions }}';
     </script>
+
 @endsection

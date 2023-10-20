@@ -8,13 +8,14 @@ use \App\Models\Course;
 use \App\Models\Operation;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
-
+use App\Events\NotificationSent;
 
 class UsersController extends Controller
 {
 
     public function profile(User $user)
     {
+
         return view('profile');
     }
 

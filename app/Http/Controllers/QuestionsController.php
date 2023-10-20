@@ -7,6 +7,8 @@ use App\Models\Operation;
 use App\Models\Comment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Events\NotificationSend;
+use Illuminate\Support\Facades\App;
 
 
 class QuestionsController extends Controller
@@ -86,6 +88,7 @@ class QuestionsController extends Controller
     
     public function addComment(Request $request,Question $question) 
     {
+
         if ($request->ajax())
         {
             if ($question->stop) // this question stoped
@@ -116,43 +119,30 @@ class QuestionsController extends Controller
                     'replyToUsername' => \App\Models\User::find( $request->reply_user_id )->name,
                     'best_answer' => 0
                 ]);
+                broadcast(new \App\Events\NewComment( $comment->load('user')  ))->toOthers();
+
                 
                 $nc = new \App\Http\Controllers\NotificationsController;
                 if ( $question->user->id == auth()->user()->id  ) // if onwer question reply to a certain comment
                 {
                     $notif = \App\Http\Controllers\NotificationsController::setReply( $question->id , $comment->id , $request->reply_user_id );
+                    broadcast(new \App\Events\NewNotification( $notif  ))->toOthers();
                 }
                 else
                 {
                     if ( $request->reply_user_id == $question->user->id ) // any user reply on a onwer of question
                     {
                         $notif = \App\Http\Controllers\NotificationsController::setReply( $question->id , $comment->id , $request->reply_user_id );
+                        broadcast(new \App\Events\NewNotification( $notif ))->toOthers();
                     }
                     else
                     {
                         $notif = \App\Http\Controllers\NotificationsController::setReply( $question->id , $comment->id , $request->reply_user_id );
+                        broadcast(new \App\Events\NewNotification( $notif  ))->toOthers();
                         $notif = \App\Http\Controllers\NotificationsController::setReply( $question->id , $comment->id , $question->user->id );
+                        broadcast(new \App\Events\NewNotification( $notif  ))->toOthers();
                     }
                 }
-                // if ( $request->reply_user_id == $question->user->id || $question->user->id == auth()->user()->id )
-                // {
-                //     // reply for owner question [ send just notification for owner ]
-                //     // or owner question reply for user [ send just notification for user ]
-                //     $notif = \App\Http\Controllers\NotificationsController::setReply( $question->id , $comment->id , $request->user );
-                //     // broadcast( new NotificationSent( $notif ) )->toOthers();
-                // }
-                // else
-                // {
-                //     /*
-                //         reply user on question =>  send two notifications : 
-                //             [ first : for the owner question ]
-                //             [ second : for the user ]
-                //     */
-                //     $notif = \App\Http\Controllers\NotificationsController::setReply( $question->id , $comment->id );
-                //     // broadcast( new NotificationSent( $notif ) )->toOthers();
-                //     $notif = \App\Http\Controllers\NotificationsController::setReply( $question->id , $comment->id , $request->reply_user_id );
-                //     // broadcast( new NotificationSent( $notif ) )->toOthers();   
-                // }
 
             }
             else
@@ -167,32 +157,15 @@ class QuestionsController extends Controller
                     'replyToUsername' => $request->reply_user_id,
                     'best_answer' => 0
                 ]);
+                broadcast(new \App\Events\NewComment( $comment->load('user')  ))->toOthers();
                 if (auth()->user()->id != $question->user->id ) // check if the user is not owner question
                 {
                     //send notification for owner question
                     $notif = \App\Http\Controllers\NotificationsController::setReply($question->id,$comment->id);
-                    // broadcast( new NotificationSent( $notif ) )->toOthers();
-
+                    broadcast(new \App\Events\NewNotification( $notif  ))->toOthers();                    
                 }
             }
             
-            // broadcast( new CommentSent($question->id , htmlspecialchars($v) , auth()->user()->id ) );
-
-            // if ( $request->reply_comment_id != 0 )
-            // {
-                
-            // }
-
-            // $comment = Comment::create([
-            //     'user_id' => auth()->user()->id,
-            //     'question_id' => $question->id,
-            //     'text' => $text ,
-            //     'image' => $image,
-            //     'replyTo' => $request->reply_comment_id,
-            //     'replyToUsername' => $request->reply_user_name, 
-            //     'best_answer' => 0
-            // ]);
-
             return Comment::where('id',$comment->id)->with('user')->with('question')->first();
 
         }
@@ -313,7 +286,8 @@ class QuestionsController extends Controller
                 'details' => ' Stopped question : ' . $question_id
             ]);
 
-            \App\Http\Controllers\NotificationsController::setStopQuestion( $question_id , $request->note );
+            $notif = \App\Http\Controllers\NotificationsController::setStopQuestion( $question_id , $request->note );
+            broadcast(new \App\Events\NewNotification( $notif  ))->toOthers();
 
             $question->save();
             $question->delete();
@@ -339,7 +313,8 @@ class QuestionsController extends Controller
                 'details' => ' Returned question :  ' . $question_id
             ]);
 
-            \App\Http\Controllers\NotificationsController::setReturnQuestion( $question_id , $request->note );
+            $notif = \App\Http\Controllers\NotificationsController::setReturnQuestion( $question_id , $request->note );
+            broadcast(new \App\Events\NewNotification( $notif  ))->toOthers();
 
             // NotificationsController::setReturnQuestion( $question_id );
 

@@ -83,4 +83,15 @@ $(document).ready(function(e){
     });
 
 
+    //Listen New Comments
+    Echo.private(`comment.${question}`)
+    .listen('NewComment', (data) => {
+        if ( data.comment.replyTo != 0 )
+        {
+            reply_comment_id = data.comment.replyTo;
+            box_comment = $(`#comment_${reply_comment_id}`);
+            // console.log( $("body").find("#comment_" + data.comment.id) );
+        }
+        addComment( data.comment );
+    })
 });
