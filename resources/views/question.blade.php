@@ -124,6 +124,8 @@
                                                                 </div>
                                                             </div>
 
+                                                            <hr>
+
                                                             <div class="coment-area">
                                                                 <ul class="we-comet" id="comments">
                                                                     
@@ -138,7 +140,7 @@
                                                                                 <form id="formAddComment" action="{{ route('question.addComment' , $question->id ) }}" method="post">
                                                                                     <div class="row">
                                                                                         <div class="col-sm-1 float-right">
-                                                                                            <img src="{{ asset('images/user.png') }}" style="max-width: 100%; max-height: 100%;" >
+                                                                                            <img src="/storage/{{  auth()->user()->image }}" style="min-width: 50px; min-height: 50px; max-width: 50px; max-height: 50px;">
                                                                                         </div>
                                                                                         <div class="col-sm-11 float-left">
                                                                                             <textarea class="form-control w-100" id="text" name="text" placeholder="Write your comment"></textarea>
@@ -227,6 +229,7 @@
         var user_id = {{ auth()->user()->id }};
         var count_comments = {{count($question->comments)}};
         var savedQuestions = '{{ auth()->user()->savedQuestions }}';
+        var page_name = "question";
     </script>
 
 @endsection

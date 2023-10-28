@@ -16,13 +16,16 @@
 				<div class="row justify-content-center">
 					<div class="col-lg-12">
 						<div class="row justify-content-center" id="page-contents">
-							<div class="col-lg-11" >
-								<div class="central-meta text-center">
+							<div class="col-lg-11 " >
+								<div class="central-meta text-center header_course" style="padding-bottom: 90px">
                                     <div class="text-left">
-                                        <a href="#" onclick="history.back()" class="btn btn-success" style="width: 15%"> <i class="fa-solid fa-circle-left"></i> Back </a><br/>
-                                        <a href="#" class="btn btn-primary mt-2" style="width: 15%" data-toggle="modal" data-target=".resources"> <i class="fa-solid fa-table-cells"></i> Show resources </a>
+                                        <a href="#" onclick="history.back()" class="btn btn-success mt-2" style="width: 15%"> <i class="fa-solid fa-circle-left"></i> Back </a><br/>
+                                        <a href="#" class="btn btn-primary mt-2" style="width: 15%" data-toggle="modal" data-target=".resources"> <i class="fa-solid fa-table-cells"></i> Show resources </a><br/>
+                                        <a href="#" class="btn btn-info mt-2" style="width: 15%" data-toggle="modal" data-target=".share_resource"> <i class="fa-solid fa-share-nodes"></i> Share a resource </a><br/>
+                                        <a href="#" class="btn btn-warning text-white mt-2" style="width: 15%"> <i class="fa-regular fa-comment-dots"></i> Chat with supervisor </a><br/>
+                                       
                                     </div>
-                                    <h1 class="text-black" style="font-size: 35px; margin-top: -65px;"><u><i class="fa-solid fa-book-open mr-2"></i>{{ $course->name }}</u></h1>
+                                    <h1 class="text-black" style="font-size: 50px; margin-top: -110px;"><u><i class="fa-solid fa-book-open mr-2"></i>{{ $course->name }}</u></h1>
 								</div>
 							</div>
 
@@ -36,16 +39,16 @@
                                                         <h3 class="widget-title"><i class="fa-solid fa-circle-info"></i> Info</h3>
                                                         <ul class="naves">
                                                             <li>
-                                                                <b>- Course : {{ $course->name }} </b>
+                                                                <b><i class="fa-solid fa-book"></i> Course : {{ $course->name }} </b>
                                                             </li>
                                                             <li>
-                                                                <b>- College : {{ $course->college->name }} </b>
+                                                                <b><i class="fa-solid fa-building-columns"></i> College : {{ $course->college->name }} </b>
                                                             </li>
                                                             <li>
-                                                                <b>- Questions count : {{ $course->questions->count() }} </b>
+                                                                <b><i class="fa-solid fa-circle-question"></i> Questions count : {{ $course->questions->count() }} </b>
                                                             </li>
                                                             <li>
-                                                                <b>- Date created :  {{ date('d-m-Y', strtotime($course->created_at)) }} </b>
+                                                                <b><i class="fa-solid fa-calendar-days"></i> Date created :  {{ date('d-m-Y', strtotime($course->created_at)) }} </b>
                                                             </li>
                                                         </ul>
                                                     </div>
@@ -56,7 +59,7 @@
                                                 <div class="central-meta">
                                                     <div class="new-postbox">
                                                         <figure>
-                                                            <img src="{{ asset('images/user.png') }}" alt="">
+                                                            <img src="/storage/{{  auth()->user()->image }}" style="min-width: 100px; min-height: 100px; max-width: 100px; max-height: 100px;">
                                                         </figure>
                                                         {{-- form post --}}
                                                         <div class="newpst-input">
@@ -128,15 +131,16 @@
 @endsection
 
 @section('modal')
+
 <div class="modal fade resources" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
       <div class="modal-content p-3" style="margin-top: 60px;">
         <h2> <i class="fa-solid fa-table-cells"></i> Resources </h2>
-        <table class="table">
+        <table class="table text-center">
             <thead>
               <tr>
                 <th scope="col"></th>
-                <th scope="col">Title</th>
+                <th class="w-50" scope="col">Title</th>
                 <th scope="col">File</th>
               </tr>
             </thead>
@@ -146,11 +150,21 @@
                 $i = 0;
             @endphp
             @foreach ($resources as $resource)
+                @php
+                    $data = json_decode( $resource->sharedFrom );
+                @endphp
+                @if ( isset($data) && $data->accepted == 0 )
+                    @continue
+                @endif
+
                 <tr>
                     <th scope="row">{{ ++$i }}</th>
                     <td>{{ $resource->title }}</td>
-                    <td><a href="/storage/{{ $resource->file }}" target="_blank" class="text-primary"><i class="fa-solid fa-file"></i> Download </a></td>
-              </tr> 
+                    <td>
+                        <a href="/storage/{{ $resource->file }}" target="_blank" class="text-info mr-3"><i class="fa-solid fa-eye"></i> Preview </a>
+                        <a href="/storage/{{ $resource->file }}" target="_blank" download="file" class="text-primary"><i class="fa-solid fa-file"></i> Download </a>
+                    </td>
+                </tr> 
             @endforeach
           
 
@@ -161,9 +175,39 @@
 </div>
 
   
+<div class="modal fade share_resource" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content p-3" style="margin-top: 60px;">
+        <h2> <i class="fa-solid fa-share-nodes"></i> Share a resource </h2>
+        <hr>
+        <div class="mt-1">
+            <form id="setResource" action="{{ route('courses.setResource', $course->id) }}" method="POST">
+                @csrf
+                <div class="">
+                    <label for="recipient-name" class=""> Title </label>
+                    <input type="text" id="title" name="title" class="form-control" id="recipient-name">
+                </div>
+                <div class="mt-3">
+                    <label for="message-text" class="">File</label>
+                    <input type="file" id="link" name="file" placeholder="http://www.test.com/file" class="form-control">
+                </div>
+                <div class="mt-4 float-right w-100">
+                    <button class="btn btn-success w-100"><i class="fa-solid fa-arrow-up-from-bracket"></i> Send</button>
+                </div>
+                <div class="mt-5">
+                    <b>When you send this file, it will reach the supervisor for this course, and after approval, it will appear to everyone.</b>
+                </div>
+                {{-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> --}}
 
+                <div class="alert alert-danger" style="display: none;" id="errorsR">
+                </div>
+            </form>
+        </div>
+      </div>
+    </div>
+</div>
 
-  @endsection
+@endsection
 
 
 @section('script')

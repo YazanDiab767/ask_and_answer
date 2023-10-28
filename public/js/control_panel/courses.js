@@ -116,6 +116,30 @@ $(document).ready(function(){
         }
     });
 
+    $("body").on('submit' , '.formAcceptResource' , function(e){
+        e.preventDefault();
+        let t = $(this);
+        let data = new FormData(this);
+        if ( confirm("Are you sure you want to accpet this resource ?") )
+        {
+            $.ajax({
+                type: 'POST',
+                url: t.attr('action'),
+                data: data,
+                success: function(data){
+                    t.hide();
+                },
+                error: function(data){
+                    alert("There is a problem in this operation ! ");
+                },
+                contentType: false,
+                cache: false,
+                processData: false
+            });
+        }
+    });
+    
+
     //edit Course
     var thisRow;
     var count;
@@ -198,24 +222,43 @@ $(document).ready(function(){
         $.get(url , function(data){
             for (const item of data)
             {
+                let sharedFrom = JSON.parse( item.sharedFrom );
+                let nameSharedFrom = ''
+                let btnSharedFrom = '';
+                if (sharedFrom)
+                {
+                    nameSharedFrom = `<label class="text-info">Shared from: ${sharedFrom.username}</label><br/>`;
+                    if (sharedFrom.accepted == 0 )
+                    {
+                        btnSharedFrom = `
+                            <form action="${host}control_panel/courses/acceptResource/${item.id}" class="formAcceptResource mt-1" method="POST">
+                                <input type="hidden" name="_token" value="${token}">
+                                <input type="hidden" name="_method" value="PUT">
+                                <button class="btn btn-info text-white accept_resource w-50"> <i class="fa-solid fa-check-double"></i> Accept  </button>
+                            </form> 
+                        `;
+                    }
+                }
+
                 $("#resources").append(`
                     <tr>
-                        <td> ${item.title} </td>
+                        <td> ${item.title} <br/> ${nameSharedFrom} </td>
                         <td>--</td>
                         <td> ${item.name} </td>
-                        <td>
+                        <td style="width: 40%">
                             <form action="${host}control_panel/courses/deleteResource/${item.id}" class="formDeleteCourse" method="POST">
                                 <input type="hidden" name="_token" value="${token}">
                                 <input type="hidden" name="_method" value="DELETE">
                                 <button class="btn btn-danger text-white delete_college w-50"> <i class="fas fa-trash"></i> Delete  </button>
                             </form> 
+                            ${ btnSharedFrom }
                         </td>
                     </tr>
                 `);
             }
         });
 
-        $(".titleDiv").html(` Resources - ${ name } `);
+        $(".titleDiv").html(` <b> <i class="fa-solid fa-swatchbook"></i> Resources - ${ name } </b> `);
 
         $("#setResource").attr('action' , `${host}control_panel/courses/setResource/${id}`);
 

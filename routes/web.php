@@ -41,6 +41,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/colleges/{college}' , [CollegesController::class, 'show'])->name('colleges.college');
     Route::get('/courses/{course}' , [CoursesController::class, 'show'])->name('courses.course');
     Route::post('/courses/addUserCourses',[CoursesController::class,'addUserCourses'])->name('courses.addUserCourses');
+    Route::post('/control_panel/courses/setResource/{course}' , [CoursesController::class, 'setResource'])->name('courses.setResource');
+
     // Route::get('/courses/{course}' , [CoursesController::class, 'show'])->name('courses.course');
 
 
@@ -96,8 +98,8 @@ Route::middleware('auth')->group(function () {
             //Courses
             Route::resource('/courses', CoursesController::class)->except(['create', 'edit']);
             Route::get('/courses/getCoursesCollege/{college_id}' , [CoursesController::class, 'getCoursesCollege'])->name('courses.getCoursesCollege');
-            Route::post('/courses/setResource/{course}' , [CoursesController::class, 'setResource'])->name('courses.setResource');
             Route::delete('/courses/deleteResource/{resource}' , [CoursesController::class, 'deleteResource'])->name('courses.deleteResource');
+            Route::put('/courses/acceptResource/{resource}' , [CoursesController::class, 'acceptResource'])->name('courses.acceptResource');
             Route::get('/courses/getResources/{college_id}' , [CoursesController::class, 'getResources'])->name('courses.getResources');
 
             //Complaints

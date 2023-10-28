@@ -24,3 +24,11 @@
 .btn-load-more{
     display: none !important;
 }
+
+.header_course{
+    background: url("../images/social.jpg") no-repeat ; 
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: 100%;
+}

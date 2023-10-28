@@ -133,7 +133,7 @@
             @endif
         </ul>
         <div class="user-img">
-            <img src="/storage/{{  auth()->user()->image }}" style="min-width: 60px; min-height: 60px; max-width: 60px; max-height: 60px;">
+            <img src="/storage/{{  auth()->user()->image }}" style="min-width: 60px; min-height: 60px; max-width: 60px; max-height: 60px; border: 2px solid white;">
             <span class="status f-online"></span>
             <div class="user-setting">
                 <a href="#" title=""><span class="status f-online"></span> online </a>
@@ -283,5 +283,5 @@
     <script src="{{ asset('js/notifications.js') }}"></script>
     <script src="{{ asset('js/all.js') }}"></script>
     {{-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA8c55_YHLvDHGACkQscgbGLtLRdxBDCfI"></script> --}}
-    <script src="{{ asset('js/app.js') }}"></script>
+    {{-- <script src="{{ asset('js/app.js') }}" defer></script> --}}
 @endsection

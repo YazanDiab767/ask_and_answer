@@ -19,6 +19,7 @@ class CreateResourcesTable extends Migration
             $table->unsignedBigInteger('course_id');
             $table->string('title');
             $table->text('file');
+            $table->text('sharedFrom')->nullable(); // if this resource shared from student
             $table->timestamps();
 
             $table->foreign('user_id')

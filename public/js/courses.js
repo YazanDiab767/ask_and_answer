@@ -252,4 +252,6 @@ $(document).ready(function(e){
         page = `/?page=${++count_page}`;
         getQuestions();
     });
+
+
 });

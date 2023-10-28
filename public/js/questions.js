@@ -222,7 +222,12 @@ $(document).ready(function(e){
             }
         });
     }
-    getComments();
+    
+    var path = window.location.pathname;
+    var page = path.split("/")[1];
+
+    if ( page == "questions" )
+        getComments();
 
     function getSubComments(comment_id){
 

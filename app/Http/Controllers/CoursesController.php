@@ -128,7 +128,23 @@ class CoursesController extends Controller
                 'title' => 'required',
                 'file' => 'required|file|mimes:jpg,jpeg,bmp,png,doc,docx,csv,rtf,xlsx,xls,txt,pdf,zip'
             ]);
+
+            if ( isset( $request->user_id ) ) // so this from user not supervisor
+            {
+                $resource = Resource::create([
+                    'user_id' => auth()->user()->id,
+                    'course_id' => $course_id,
+                    'title' => $request->title,
+                    'file' => $request->file->store('resources','public'),
+                    'sharedFrom' => json_encode(array(
+                        "username" => User::find( $request->user_id )->name,
+                        "accepted" => 0 // not accepted
+                    ))
+                ]);
+                return;
+            }
             
+
             $resource = Resource::create([
                 'user_id' => auth()->user()->id,
                 'course_id' => $course_id,
@@ -149,7 +165,15 @@ class CoursesController extends Controller
                 ->leftJoin('users', 'users.id', '=', 'resources.user_id')
                 ->get(['resources.*','users.name']);
         }
-    }    
+    }  
+    
+    public function acceptResource(Request $request , Resource $resource)
+    {
+        $data = json_decode( $resource->sharedFrom );
+        $data->accepted = 1;
+        $resource->sharedFrom = json_encode($data);
+        $resource->save();
+    }
 
     //get resources for a certain course
     public function getResources(Request $request , $course_id)
