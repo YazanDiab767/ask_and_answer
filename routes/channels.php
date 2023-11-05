@@ -21,6 +21,15 @@ Broadcast::channel('notification.{id}', function ($user , $id) {
     return true;
 });
 
+Broadcast::channel('message_with_supervisor.{course_id}.{user_id}', function ($course_id , $user_id) {
+    return true;
+});
+
+Broadcast::channel('message_workspace.{workspace_id}', function ($workspace_id ) {
+    return true;
+});
+
+
 Broadcast::channel('comment.{id}', function ($user , $id) {
     return true;
 });

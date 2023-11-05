@@ -264,6 +264,38 @@ $(document).ready(function(){
 
     });
 
+    $('body').on('click' , '.btnShowMessages' , function(e){
+        e.preventDefault();
+        $("#chats").html(``);
+        let data = $(this).closest('.row_course').find('.btnEditCourse').attr('href');
+        let id = data.split('/')[0];
+
+        let token = $("meta[name='csrf-token']").attr("content");
+
+        //get resources for course
+        let url = `${host}control_panel/getChatsCourse/${id}`
+        let i = 0;
+        $.get(url , function(data){
+            for (const item of data)
+            {
+                $("#chats").append(`
+                    <tr style="vertical-align: middle">
+                        <td> ${++i} </td>
+                        <td>
+                            <img src="/storage/${ item.user.image }" style="min-width: 60px; min-height: 60px; max-width: 60px; max-height: 60px; border-radius: 30px ">
+                            <b> ${item.user.name} </b>
+                        </td>
+                        <td>
+                            <a href="/chatWithSupervisor/${id}/${item.user.id}" class="btn btn-info w-100"><i class="fa-solid fa-arrow-up-right-from-square"></i> Go to chat</a>
+                        </td>
+                    </tr>
+                `);
+            }
+        });
+
+    });
+
+
     // new resource
     $("#btn_addResource").on('click', function(){
         $("#setResource").submit();

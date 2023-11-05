@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable,SoftDeletes;
+    use HasFactory, Notifiable,SoftDeletes,HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -76,5 +77,20 @@ class User extends Authenticatable
     public function notifications()
     {
         return $this->hasMany(\App\Models\Notification::class);
+    }
+
+    public function ChatWithSupervisor()
+    {
+        return $this->hasMany(\App\Models\ChatWithSupervisor::class);
+    }
+
+    public function workspaces()
+    {
+        return $this->hasMany(\App\Models\Workspace::class);
+    }
+
+    public function chatWorkspace()
+    {
+        return $this->hasMany(\App\Models\ChatWorkspace::class);
     }
 }

@@ -11,6 +11,14 @@
 
 @section('body')
 @php $count = 1; @endphp
+@php
+    $permissions = json_decode(auth()->user()->permissions , JSON_FORCE_OBJECT ) ;
+    $id_course = array();
+    $course; // if supervisor
+    if ( isset( $permissions["course"] ) && auth()->user()->role == 'supervisor' ){
+        $id_course = $permissions["course"];
+    }
+@endphp
 <div class="theme-layout">
 	<section>
 		<div class="gap gray-bg">
@@ -20,19 +28,15 @@
 						<div class="row justify-content-center" id="page-contents">
 							<div class="col-lg-11">
 								<div class="central-meta text-center">
-                                    <h2 class="f-title" style="font-size: 25px"><i class="fa-solid fa-book text-black" style="font-size: 25px"></i> Courses ( {{ \App\Models\Course::all()->count() }} ) </h2>
-
+                                    
+                                    @if ( count($id_course) == 0 )
+                                        <h2 class="f-title" style="font-size: 25px"><i class="fa-solid fa-book text-black" style="font-size: 25px"></i> Courses ( {{ \App\Models\Course::all()->count() }} ) </h2>
+                                    @else
+                                    <h2 class="f-title" style="font-size: 25px"><i class="fa-solid fa-book text-black" style="font-size: 25px"></i> Courses ( {{ count($id_course) }} ) </h2>    
+                                    @endif
                                     <div class="card-body">
-                                        @php
-                                            $permissions = json_decode(auth()->user()->permissions , JSON_FORCE_OBJECT ) ;
-                                            $id_course = 0;
-                                            if ( isset( $permissions["course"] ) && auth()->user()->role == 'supervisor' )
-                                            {
-                                                $id_course = $permissions["course"];
-                                            }
-                                                
-                                        @endphp
-                                        @if ( $id_course == 0 )
+
+                                        @if ( count($id_course) == 0  )
                                             <div class="row">
                                                 <div class="col-sm-4 text-left">
                                                     <button class="btn btn-primary" id="btnAddNewCourse" data-toggle="modal" data-target=".newCourse"> <i class="fa-solid fa-plus"></i> Add new course </button>
@@ -52,6 +56,8 @@
                                                     <input type="text" class="form-control" id="searchInput" placeholder="Please enter course name" aria-label="Username" aria-describedby="basic-addon1">
                                                 </div>
                                             </div>
+                                        @else
+                                            <b>Courses for which you are responsible</b>
                                         @endif
                                         <div class="table-responsive mt-5">
                                             <table class="table table-striped text-center" id="cs">
@@ -65,15 +71,16 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody id="courses">
-                                                    @if ( $id_course != 0 )
+                                                    @if ( count($id_course) > 0 )
                                                         @php
-                                                            $courses = [\App\Models\Course::find( $id_course )];
+                                                            $courses = \App\Models\Course::whereIn('id' , $id_course )->get();
                                                         @endphp
                                                     @endif
                                                     @foreach ( $courses as $course )
                                                         <tr class="row_course">
                                                             <td class="align-middle"> {{ $count }} </td>
-                                                            <td class="align-middle"> {{ $course->name }}  </td>
+                                                            <td class="align-middle"> {{ $course->name }}  </td> 
+                                                            <td class="align-middle" style="width: 12%;"> <a href="#" class="btn btn-warning text-white btnShowMessages w-100" data-toggle="modal" data-target=".messages" > <i class="fa-solid fa-comments"></i> Messages  </a> </td>
                                                             <td class="align-middle" style="width: 12%;"> <a href="#" class="btn btn-info btnShowresources w-100" data-toggle="modal" data-target=".divResources" > <i class="fa-solid fa-swatchbook"></i> Resources  </a> </td>
                                                             <td class="align-middle" style="width: 12%;"> <a href="{{$course->id}}/{{$course->name}}/{{ $count++ }}/{{$course->college->id}}" class="btn btn-success btnEditCourse w-100" data-toggle="modal" data-target=".editCourse" > <i class="fas fa-edit"></i> Edit  </a> </td>
                                                             <td class="align-middle" style="width: 12%;">
@@ -145,6 +152,31 @@
     </div>
 </div>
 
+{{-- Form Messages --}}
+<div class="modal fade messages" tabindex="-1" role="dialog" >
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"> <i class="fa-solid fa-comments"></i> Messages </h5>
+                <div class="float-left">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-body">
+                <table class="table table-hover" id="chats">
+
+                </table>
+            </div>
+            <br/>
+            <div class="modal-footer"> 
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"> <i class="fa-solid fa-xmark"></i>  Close </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 {{-- Form Edit Course --}}
 <div class="modal fade editCourse" tabindex="-1" role="dialog" >
     <div class="modal-dialog modal-lg">
@@ -167,7 +199,7 @@
                     </div>
                     <div class="mt-4">
                         <label> College  : </label>
-                        <select class="" id="edit_college_id" name="college_id" >
+                        <select class="form-control" id="edit_college_id" name="college_id" >
                             @foreach ($colleges as $college)
                                 <option value="{{ $college->id }}">{{ $college->name }}</option>
                             @endforeach

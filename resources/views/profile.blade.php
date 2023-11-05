@@ -33,7 +33,7 @@
 					<div class="col-lg-2 col-sm-3">
 						<div class="user-avatar">
 							<figure>
-								<img src="/storage/{{ auth()->user()->image }}" alt="">
+								<img src="/storage/{{ $user->image }}" alt="">
 								<form id="form_edit_photo"  class="edit-phto">
 									<i class="fa fa-camera-retro"></i>
 									<label class="fileContainer">
@@ -48,13 +48,15 @@
 						<div class="timeline-info">
 							<ul>
 								<li class="admin-name">
-								  <h5>{{ auth()->user()->name }}</h5>
-								  <span>{{ auth()->user()->role }}</span>
+								  <h5>{{ $user->name }}</h5>
+								  <span>{{ $user->role }}</span>
 								</li>
 								<li>
-									<a class="active btnTaps" href="" id="btn_posts" data-ripple="">Time line</a>
-									<a class="btnTaps" href="" id="btn_info" data-ripple="">Personal information</a>
-									<a class="btnTaps" href="" id="btn_activities" data-ripple="">Activites</a>
+									<a class="active btnTaps" href="" id="btn_posts" data-ripple="">@if ( auth()->user()->id == $user->id )My @endif Questions</a>
+									@if ( auth()->user()->id == $user->id )
+										<a class="btnTaps" href="" id="btn_info" data-ripple="">Personal information</a>
+										<a class="btnTaps" href="" id="btn_activities" data-ripple="">Activites</a>
+									@endif
 								</li>
 							</ul>
 						</div>
@@ -90,8 +92,8 @@
 							</div>
 							<div class="col-lg-8">
 								<div class="loadMore">
-									<div class="central-meta item" id="tap_posts">
-										<h3>Your Questions ( {{ auth()->user()->questions()->count() }} ) </h3>
+									<div class="central-meta item tab" id="tap_posts">
+										<h3>@if ( auth()->user()->id == $user->id )My @endif Questions ( {{ $user->questions()->count() }} ) </h3>
 										<div id="posts">
 											
 										</div>
@@ -99,73 +101,75 @@
 											<a class="btn btn-primary btnGetMoreQuestion text-white"> <i class="fa-brands fa-get-pocket"></i> Show More </a>
 										</div>
 									</div>
-									<div class="central-meta item p-5" id="tap_info">
-										<h3><i class="fa-solid fa-address-card"></i> Your Information</h3>
-										<hr>
-										<div>
-											<div class="mt-4">
-												<b> <i class="fa-solid fa-user"></i> Username : </b> {{ auth()->user()->name }}
+									@if ( auth()->user()->id == $user->id )
+										<div class="central-meta item tab p-5" id="tap_info">
+											<h3><i class="fa-solid fa-address-card"></i> Your Information</h3>
+											<hr>
+											<div>
+												<div class="mt-4">
+													<b> <i class="fa-solid fa-user"></i> Username : </b> {{ $user->name }}
+												</div>
+												<div class="mt-4">
+													<b> <i class="fa-solid fa-at"></i> Email : </b> {{ $user->email }}
+												</div>
+												<div class="mt-4">
+													<b> <i class="fa-solid fa-bars"></i> Role : </b> {{ $user->role }}
+												</div>
+												<div class="mt-4">
+													<b> <i class="fa-solid fa-earth-americas"></i> Country : </b> {{ $user->country }}
+												</div>
+												<div class="mt-4">
+													<b> <i class="fa-solid fa-calendar-days"></i> Date Create Account : </b> {{ $user->created_at }}
+												</div>
+												
 											</div>
-											<div class="mt-4">
-												<b> <i class="fa-solid fa-at"></i> Email : </b> {{ auth()->user()->email }}
-											</div>
-											<div class="mt-4">
-												<b> <i class="fa-solid fa-bars"></i> Role : </b> {{ auth()->user()->role }}
-											</div>
-											<div class="mt-4">
-												<b> <i class="fa-solid fa-earth-americas"></i> Country : </b> {{ auth()->user()->country }}
-											</div>
-											<div class="mt-4">
-												<b> <i class="fa-solid fa-calendar-days"></i> Date Create Account : </b> {{ auth()->user()->created_at }}
-											</div>
+										</div>
+										<div class="central-meta item tab" id="tap_activity">
+											<h3><i class="fa-solid fa-chart-line"></i> Your Activites</h3>
+											<hr>
+											<div>
+												<ul class="nav nav-pills w-100 text-center">
+													<li class="nav-item w-50">
+													<a class="nav-link active" data-toggle="pill" href="#likes"><i class="fa-solid fa-thumbs-up"></i> / <i class="fa-solid fa-thumbs-down"></i> Like and Dislikes</a>
+													</li>
+													<li class="nav-item w-50">
+													<a class="nav-link" data-toggle="pill" href="#comments"><i class="fa-solid fa-comments"></i> Comments</a>
+													</li>
+												</ul>
 											
-										</div>
-									</div>
-									<div class="central-meta item" id="tap_activity">
-										<h3><i class="fa-solid fa-chart-line"></i> Your Activites</h3>
-										<hr>
-										<div>
-											<ul class="nav nav-pills w-100 text-center">
-												<li class="nav-item w-50">
-												<a class="nav-link active" data-toggle="pill" href="#likes"><i class="fa-solid fa-thumbs-up"></i> / <i class="fa-solid fa-thumbs-down"></i> Like and Dislikes</a>
-												</li>
-												<li class="nav-item w-50">
-												<a class="nav-link" data-toggle="pill" href="#comments"><i class="fa-solid fa-comments"></i> Comments</a>
-												</li>
-											</ul>
-										
-											<div class="tab-content">
-												<div class="tab-pane container active pt-4" id="likes">
+												<div class="tab-content">
+													<div class="tab-pane container active pt-4" id="likes">
 
-													@foreach( auth()->user()->likes as $like )
-														<label>
-															-You
-															@if ( $like->type == "like" )
-																<span class="text-success">liked</span>
-															@else
-																<span class="text-danger">disliked</span>
-															@endif
-															this question of
-															<u>{{ $like->question->user->name }}</u>
-															<a href="/questions/{{ $like->question->id }}" class="text-primary ml-3"><i class="fa-regular fa-paper-plane"></i> Go to Question</a>
-															<span class="ml-5"><i class="fa-solid fa-calendar-days"></i> {{ $like->created_at }} </span>
-														</label>
-														<hr>
-													@endforeach
-												</div>
-												<div class="tab-pane container fade" id="comments">
-													@foreach( auth()->user()->comments as $comment )
-														<label class="mt-4">
-															-You commented on question of <u>{{ $comment->question->user->name }}</u>
-															<a href="/questions/{{ $comment->question->id }}" class="text-primary ml-3"><i class="fa-regular fa-paper-plane"></i> Go to Question</a>
-															<span class="ml-5"><i class="fa-solid fa-calendar-days"></i> {{ $comment->created_at }} </span>
-														</label>
-														<hr>
-													@endforeach
+														@foreach( $user->likes as $like )
+															<label>
+																-You
+																@if ( $like->type == "like" )
+																	<span class="text-success">liked</span>
+																@else
+																	<span class="text-danger">disliked</span>
+																@endif
+																this question of
+																<u>{{ $like->question->user->name }}</u>
+																<a href="/questions/{{ $like->question->id }}" class="text-primary ml-3"><i class="fa-regular fa-paper-plane"></i> Go to Question</a>
+																<span class="ml-5"><i class="fa-solid fa-calendar-days"></i> {{ $like->created_at }} </span>
+															</label>
+															<hr>
+														@endforeach
+													</div>
+													<div class="tab-pane container fade" id="comments">
+														@foreach( $user->comments as $comment )
+															<label class="mt-4">
+																-You commented on question of <u>{{ $comment->question->user->name }}</u>
+																<a href="/questions/{{ $comment->question->id }}" class="text-primary ml-3"><i class="fa-regular fa-paper-plane"></i> Go to Question</a>
+																<span class="ml-5"><i class="fa-solid fa-calendar-days"></i> {{ $comment->created_at }} </span>
+															</label>
+															<hr>
+														@endforeach
+													</div>
 												</div>
 											</div>
 										</div>
-									</div>
+									@endif
 								</div>
 							</div>
 							<div class="col-lg-1">
@@ -255,8 +259,8 @@
 @parent
 	<script>
 		var page_name = "profile";
-		var savedQuestions = '{{ auth()->user()->savedQuestions }}';
-		var user_id = {{ auth()->user()->id  }};
+		var savedQuestions = '{{ $user->savedQuestions }}';
+		var user_id = {{ $user->id  }};
 	</script>
     <script src=" {{ asset('js/select2.min.js') }} "></script>
 	<script src=" {{ asset('js/comments.js') }} "></script>

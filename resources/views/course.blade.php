@@ -22,7 +22,7 @@
                                         <a href="#" onclick="history.back()" class="btn btn-success mt-2" style="width: 15%"> <i class="fa-solid fa-circle-left"></i> Back </a><br/>
                                         <a href="#" class="btn btn-primary mt-2" style="width: 15%" data-toggle="modal" data-target=".resources"> <i class="fa-solid fa-table-cells"></i> Show resources </a><br/>
                                         <a href="#" class="btn btn-info mt-2" style="width: 15%" data-toggle="modal" data-target=".share_resource"> <i class="fa-solid fa-share-nodes"></i> Share a resource </a><br/>
-                                        <a href="#" class="btn btn-warning text-white mt-2" style="width: 15%"> <i class="fa-regular fa-comment-dots"></i> Chat with supervisor </a><br/>
+                                        <a href="{{ route('users.chatWithSupervisor' , $course->id) }}" class="btn btn-warning text-white mt-2" style="width: 15%"> <i class="fa-regular fa-comment-dots"></i> Chat with supervisor </a><br/>
                                        
                                     </div>
                                     <h1 class="text-black" style="font-size: 50px; margin-top: -110px;"><u><i class="fa-solid fa-book-open mr-2"></i>{{ $course->name }}</u></h1>

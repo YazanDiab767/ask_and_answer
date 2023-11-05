@@ -27,4 +27,9 @@ class Course extends Model
     {
         return $this->hasMany(Resource::class);
     }
+
+    public function ChatWithSupervisor()
+    {
+        return $this->hasMany(\App\Models\ChatWithSupervisor::class);
+    }
 }

@@ -86,10 +86,11 @@ $(document).ready(function(e){
     var path = window.location.pathname;
     var page = path.split("/")[1];
     //Listen New Comments
-    if ( page == "question" ){
+    if ( page == "questions" )
+    {
         Echo.private(`comment.${question}`)
         .listen('NewComment', (data) => {
-            if ( data.comment.replyTo != 0 )
+            if ( data.comment.replyTo != 0 &&  data.comment.replyTo != '0' )
             {
                 reply_comment_id = data.comment.replyTo;
                 box_comment = $(`#comment_${reply_comment_id}`);
@@ -97,5 +98,6 @@ $(document).ready(function(e){
             }
             addComment( data.comment );
         });
+        console.log(1);
     }
 });

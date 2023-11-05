@@ -1,11 +1,11 @@
 $(document).ready(function(){
 
-    $(".central-meta").hide();
+    $(".tab").hide();
     $("#tap_posts").show();
 
     $("#btn_posts").on('click', function(e){
         e.preventDefault();
-        $(".central-meta").hide();
+        $(".tab").hide();
         $("#tap_posts").show(250);
         $(".btnTaps").removeClass('active');
         $("#btn_posts").addClass('active');
@@ -13,7 +13,7 @@ $(document).ready(function(){
 
     $("#btn_info").on('click', function(e){
         e.preventDefault();
-        $(".central-meta").hide();
+        $(".tab").hide();
         $("#tap_info").show(250);
         $(".btnTaps").removeClass('active');
         $("#btn_info").addClass('active');
@@ -22,7 +22,7 @@ $(document).ready(function(){
 
     $("#btn_activities").on('click', function(e){
         e.preventDefault();
-        $(".central-meta").hide();
+        $(".tab").hide();
         $("#tap_activity").show(250);
         $(".btnTaps").removeClass('active');
         $("#btn_activities").addClass('active');

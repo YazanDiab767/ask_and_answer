@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="{{ asset('css/main.css') }}">
     <link rel="stylesheet" href="{{ asset('css/color.css') }}">
     <link rel="stylesheet" href="{{ asset('css/responsive.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/select2.min.css') }}" />
 @endsection
 
 @section('content')
@@ -89,6 +90,9 @@
                 <a href="{{ route('colleges.showAll') }}" class="text-white"><i class="fa-solid fa-building"></i> Colleges</a>
             </li>
             <li>
+                <a href="{{ route('workspace.index') }}" class="text-white"><i class="fa-solid fa-network-wired"></i> Workspace</a>
+            </li>
+            <li>
                 <a href="{{ route('users.settings') }}" class="text-white"><i class="fa fa-cogs"></i> Settings</a>
             </li>
         </ul>
@@ -98,14 +102,34 @@
 
                 <div class="searched">
                     <form method="post" class="form-search">
-                        <input type="text" placeholder="Search Friend">
-                        <button data-ripple><i class="fa-solid fa-magnifying-glass"></i></button>
+                        <select class="selectCourseSearch js-states form-control w-100 p-5" name="course">
+                            <option value="-1"></option>
+                            ...
+                            @foreach (\App\Models\Course::all() as $course)
+                                <option value="{{ $course->id }}"> {{ $course->name }} / {{ $course->college->name }} </option>
+                                ...
+                            @endforeach
+                        </select>                        
+                        {{-- <button data-ripple><i class="fa-solid fa-magnifying-glass"></i></button> --}}
                     </form>
                 </div>
             </li>
-            <li><a href="{{ route('main') }}" onclick="window.location.assign(`/main`)" class="text-white" data-ripple=""><i class="fa-solid fa-house"></i></a></li>
+            {{-- <li><a href="{{ route('main') }}" onclick="window.location.assign(`/main`)" class="text-white" data-ripple=""><i class="fa-solid fa-house"></i></a></li> --}}
             <li>
-                <a href="#" class="text-white" data-ripple="">
+                <a href="#" class="text-white btnMessages">
+                    <i class="fa-solid fa-message"></i><span class="text-white count_messages">0</span>
+                </a>
+                <div class="dropdowns">
+                    <span>
+                        <span style="font-size: 18px;"><i class="fa-solid fa-message"></i> New Messages: <b class="count_messages"></b> </span> <br/>
+                    </span>
+                    <br/>
+                    <ul class="drops-menu " id="messages">
+                    </ul>
+                </div>
+            </li>
+            <li>
+                <a href="#" class="text-white btnShowNotifications" data-ripple="">
                     <i class="fa-solid fa-bell"></i><span class="text-white currentNotification">{{ \App\Models\Notification::getNumberNewNotifications() }}</span>
                 </a>
                 <div class="dropdowns">
@@ -160,7 +184,7 @@
         $permissions = json_decode(auth()->user()->permissions , JSON_FORCE_OBJECT ) ;
     @endphp
 
-    @if ( isset( $permissions["colleges"] ) || auth()->user()->role == 'admin' )
+    @if ( auth()->user()->role == 'admin' )
         <div class="setting-row text-center p-3 mt-3">
             <a href="{{ route('colleges.index') }}">
                 <div class="row">
@@ -193,7 +217,7 @@
         </div>
     @endif
 
-    @if ( isset( $permissions["questions_complaints"] ) || auth()->user()->role == 'admin' )
+    @if ( isset( $permissions["course"] ) || auth()->user()->role == 'admin' )
 
         <div class="setting-row p-3">
             <a href="{{ route('control_panel.questions') }}">
@@ -279,7 +303,10 @@
     <script>
         var user_id = {{ auth()->user()->id  }};
         var count_notifications = {{ \App\Models\Notification::getNumberNewNotifications() }};
+        var count_messages = {{ \App\Models\Notification::getNumberNotificationsForMessages() }};
     </script>
+    <script src="{{ asset('js/placeholders.js') }}"></script>
+    <script src=" {{ asset('js/select2.min.js') }} "></script>
     <script src="{{ asset('js/notifications.js') }}"></script>
     <script src="{{ asset('js/all.js') }}"></script>
     {{-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA8c55_YHLvDHGACkQscgbGLtLRdxBDCfI"></script> --}}

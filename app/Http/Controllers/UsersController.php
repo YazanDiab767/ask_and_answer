@@ -6,9 +6,12 @@ use Illuminate\Http\Request;
 use \App\Models\User;
 use \App\Models\Course;
 use \App\Models\Operation;
+use \App\Models\ChatWithSupervisor;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
 use App\Events\NotificationSent;
+use DB;
+
 
 class UsersController extends Controller
 {
@@ -16,7 +19,16 @@ class UsersController extends Controller
     public function profile(User $user)
     {
 
-        return view('profile');
+        return view(
+            'profile',[
+                'user' => $user
+            ]
+        );
+    }
+
+    public function calendar()
+    {
+        return view('calendar');
     }
 
     public function settings()
@@ -86,7 +98,70 @@ class UsersController extends Controller
         }
     }
 
+    public function chatWithSupervisor(Course $course) // as student
+    {
+        return view('chats.chat_with_supervisor' ,[
+            'course' => $course
+        ]);
+    }
+
+    public function chatWithUser(Course $course , User $user) // as supervisor
+    {
+        return view('chats.chat_with_supervisor' ,[
+            'course' => $course,
+            'student' => $user
+        ]);
+    }
+    
+    public function getChatWithSupervisor( Course $course , User $user )
+    {
+        return ChatWithSupervisor::where('course_id',$course->id)->where('user_id' , $user->id)->with('user')->with('course')->orderBy('created_at','DESC')->paginate(10);
+    }
+
+    public function sendMessageToChatWithSupervisor(Request $request, Course $course , User $user )
+    {
+        $supervisor_name = '';
+        if ( $request->sender == 'supervisor' )
+            $supervisor_name = auth()->user()->name;
+
+        $chat = ChatWithSupervisor::create([
+            'user_id' => $user->id,
+            'course_id' => $course->id,
+            'supervisor_name' => $supervisor_name,
+            'sender' => $request->sender,
+            'text' => $request->text,
+            'image' => ''
+        ]);
+
+
+        if ( $request->sender == 'supervisor' )
+        {
+            $link = '/chatWithSupervisor/' . $course->id;
+            $id = $user->id;
+            $text = "send message to you in ( ".  $course->name ." - Course )";
+            $notif = \App\Http\Controllers\NotificationsController::setMessage( $id , $text , $link);
+            broadcast(new \App\Events\NewNotification( $notif  ))->toOthers();
+        }
+
+
+        broadcast(new \App\Events\NewMessageWithSupervisor( $chat  ))->toOthers();
+
+        return ChatWithSupervisor::where('chat_with_supervisor.id',$chat->id)->where('course_id',$course->id)->where('user_id' , $user->id)->with('user')->with('course')->get();
+    }
+    
+
     // D A S H - B O A R D
+
+    public function getChatsCourse(Course $course)
+    {
+        // return DB::table('chat_with_supervisor')->groupBy('user_id')->having('course_id',$course->id)->get();
+        $chats = ChatWithSupervisor::select('user_id')
+                ->where('course_id', $course->id)
+                ->groupBy('user_id')
+                ->with('user')
+                ->get();
+        return $chats;
+    }
 
     public function index()
     {

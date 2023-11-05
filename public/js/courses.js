@@ -3,6 +3,10 @@ $(document).ready(function(e){
     $('.selectCourses').select2();
     $(".selectCourse").select2();
 
+    // $(".select2-selection__clear").trigger('click');
+
+    
+
     $('.image').change(function(){
         var filename = $(this).val().split('\\').pop();
         $('#file_name').html(filename);
@@ -71,7 +75,7 @@ $(document).ready(function(e){
     function getQuestions(){
         let name = 'getNewQuestions';
         if ( typeof page_name !== 'undefined' && page_name == 'profile' )
-            name = 'getUserPosts';
+            name = `getUserPosts/${user_id}`;
         else if ( typeof page_name !== 'undefined' && page_name == 'settings' )
             name = 'getUserSavedPosts';
 
@@ -186,7 +190,7 @@ $(document).ready(function(e){
                         </div>
                     </div>
                     <div class="friend-name">
-                        <ins><a href="time-line.html" title="">${question.user.name}</a></ins>
+                        <ins><a href="/profile/${question.user.id}" title="">${question.user.name}</a></ins>
                         <span><i class="fa-solid fa-calendar-days"></i> published: ${ date_time.getFullYear() }/${date_time.getMonth()}/${date_time.getDate()} ${date_time.getHours()}:${date_time.getMinutes()}</span>
                     </div>
                     <div class="post-meta">

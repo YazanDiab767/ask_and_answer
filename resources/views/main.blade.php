@@ -4,7 +4,6 @@
 
 @section('style')
 	@parent
-	<link rel="stylesheet" href="{{ asset('css/select2.min.css') }}" />
 	<style>
 		.select2-search__field, .select2-container{
 			width: 100% !important;
@@ -53,28 +52,8 @@
 									</div>
 
 									<div class="widget">
-										<h4 class="widget-title">Recent Activity</h4>
-										<ul class="activitiez">
-											<li>
-												<div class="activity-meta">
-													<i>10 hours Ago</i>
-													<span><a href="#" title="">Commented on Video posted </a></span>
-													<h6>by <a href="time-line.html">black demon.</a></h6>
-												</div>
-											</li>
-											<li>
-												<div class="activity-meta">
-													<i>30 Days Ago</i>
-													<span><a href="#" title="">Posted your status. “Hello guys, how are you?”</a></span>
-												</div>
-											</li>
-											<li>
-												<div class="activity-meta">
-													<i>2 Years Ago</i>
-													<span><a href="#" title="">Share a video on her timeline.</a></span>
-													<h6>"<a href="#">you are so funny mr.been.</a>"</h6>
-												</div>
-											</li>
+										<h4 class="widget-title">My Workspaces ( <b id="count"></b> )</h4>
+										<ul class="activitiez" id="workspaces">
 										</ul>
 									</div>
 
@@ -156,14 +135,16 @@
 							<div class="col-lg-3">
 								<aside class="sidebar static">
 									<div class="widget">
-										<h4 class="widget-title">Info</h4>	
+										<h4 class="widget-title">{{ auth()->user()->name }}</h4>	
 										<div class="your-page">
 											<figure>
-												<a href="#" title=""> <img src="/storage/{{  auth()->user()->image }}" style="min-width: 60px; min-height: 60px; max-width: 60px; max-height: 60px;"> </a>
+												<a href="#" title=""> <img src="/storage/{{  auth()->user()->image }}" style="min-width: 70px; min-height: 70px; max-width: 70px; max-height: 70px;"> </a>
 											</figure>
-											<div class="page-meta">
+											<div class="page-meta p-3">
 												<span><i class="fa-solid fa-circle-question"></i><a href="">Questions <em> {{ auth()->user()->questions()->count() }}</em></a></span>
-												<span><i class="fa-solid fa-bell"></i><a href="/notifications">Notifications <em> {{ \App\Models\Notification::getNumberNewNotifications() }} </em></a></span>
+												<span><i class="fa-solid fa-bell"></i><a href="/notifications">Notifications <em class="currentNotification"> {{ \App\Models\Notification::getNumberNewNotifications() }} </em></a></span>
+												<span><i class="fa-solid fa-message"></i><a>Messages <em class="count_messages"> 0 </em></a></span>
+
 											</div>
 											<div class="page-likes">
 												<ul class="nav nav-tabs likes-btn">
@@ -247,12 +228,13 @@
 
 @section('script')
 @parent
-    <script src=" {{ asset('js/select2.min.js') }} "></script>
 	<script src=" {{ asset('js/comments.js') }} "></script>
 	<script src=" {{ asset('js/courses.js') }} "></script>
+	<script src=" {{ asset('js/workspace/index.js') }} "></script>
 	<script>
         var user_id = {{ auth()->user()->id  }};
         var savedQuestions = '{{ auth()->user()->savedQuestions }}';
         var count_comments = 0;
+		var count = {{ \App\Models\Workspace::where('user_id' , auth()->user()->id )->orWhere('members' , 'LIKE' , '%' . auth()->user()->email . '%')->count() }};
     </script>
 @endsection

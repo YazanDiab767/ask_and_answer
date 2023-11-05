@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Question;
 use App\Models\Operation;
 use App\Models\Comment;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Events\NotificationSend;
@@ -51,9 +52,9 @@ class QuestionsController extends Controller
         }
     }
 
-    public function user()
+    public function user(User $user)
     {
-        return Question::where('user_id',auth()->user()->id)->with('user')->with('comments')->with('likes')->with('course')->paginate( Question::$paginate );
+        return Question::where('user_id',$user->id)->with('user')->with('comments')->with('likes')->with('course')->paginate( Question::$paginate );
     }
 
     public function course($course)

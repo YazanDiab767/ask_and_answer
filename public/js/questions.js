@@ -18,12 +18,12 @@ function addComment(comment)
                 </div>
                 <div class="we-comment">
                     <div class="coment-head">
-                        <h5><a><i class="fa fa-reply text-primary"></i> ${c.user.name} <b class="text-primary">reply to</b> ${c.replyToUsername}</a></h5>
+                        <h5><a href="/profile/${c.user.id}"><i class="fa fa-reply text-primary"></i> ${c.user.name} <b class="text-primary">reply to</b> ${c.replyToUsername}</a></h5>
                         <span>${ date_time.getFullYear() }/${date_time.getMonth()}/${date_time.getDate()} ${date_time.getHours()}:${date_time.getMinutes()}</span>
                     </div>
                     <p>${c.text}</p>
                     ${img}
-                    <a class="we-reply replyComment" href="${c.user.id}/${c.replyTo}" title="Reply">Reply <i class="fa fa-reply"></i></a>
+                    <a class="we-reply replyComment" href="${c.user.id}/${c.replyTo}/${c.user.name}" title="Reply">Reply <i class="fa fa-reply"></i></a>
                 </div>
             </li>
         </ul>
@@ -59,12 +59,12 @@ function addComment(comment)
                         </div>
                         <div class="we-comment">
                             <div class="coment-head">
-                                <h5><a><i class="fa fa-reply text-primary"></i> ${c.user.name} <b class="text-primary">reply to</b> ${c.replyToUsername}</a></h5>
+                                <h5><a href="/profile/${c.user.id}"><i class="fa fa-reply text-primary"></i> ${c.user.name} <b class="text-primary">reply to</b> ${c.replyToUsername}</a></h5>
                                 <span>${d_t}</span>
                             </div>
                             <p>${c.text}</p>
                             ${img}
-                            <a class="we-reply replyComment" href="${c.user.id}/${comment.id}" title="Reply">Reply <i class="fa fa-reply"></i></a>
+                            <a class="we-reply replyComment" href="${c.user.id}/${comment.id}/${c.user.name}" title="Reply">Reply <i class="fa fa-reply"></i></a>
                         </div>
                     </li></ul>
                 `;
@@ -77,16 +77,16 @@ function addComment(comment)
     $("#comments").append(`
         <li class="box_comment" id="comment_${comment.id}">
             <div class="comet-avatar">
-                <img src="/storage/${comment.user.image}" width="60" alt="">
+                <img src="/storage/${comment.user.image}" style="min-width: 70px; min-height: 60px; max-width: 70px; max-height: 60px;" alt="">
             </div>
             <div class="we-comment">
                 <div class="coment-head">
-                    <h5><a href="3" title="">${comment.user.name}</a></h5>
+                    <h5><a href="/profile/${comment.user.id}" title="">${comment.user.name}</a></h5>
                     <span>${ date_time.getFullYear() }/${date_time.getMonth()}/${date_time.getDate()} ${date_time.getHours()}:${date_time.getMinutes()}</span>
                 </div>
                 <p>${comment.text}</p>
                 ${image}
-                <a class="we-reply replyComment" href="${comment.user.id}/${comment.id}" title="Reply">Reply <i class="fa fa-reply"></i></a>
+                <a class="we-reply replyComment" href="${comment.user.id}/${comment.id}/${comment.user.name}" title="Reply">Reply <i class="fa fa-reply"></i></a>
             </div>
             ${ subComments }
         </li>
@@ -102,6 +102,8 @@ let reply_comment_id = 0; // for reply comments
 var box_comment;
 
 $(document).ready(function(e){
+
+    $("#divReplyUser").hide();
 
     $("#btnAddImageToComment").on('click', function(e){
         e.preventDefault();
@@ -128,6 +130,12 @@ $(document).ready(function(e){
         window.location.hash = '#text';
     });
 
+    $("#formAddComment textarea").on('click', function(e){
+        $("#divReplyUser").hide();
+        reply_user_id = 0;
+        reply_comment_id = 0;
+        box_comment = null;
+    });
 
     $("#formAddComment textarea").on('keyup', function(e){
         e.preventDefault();
@@ -153,6 +161,8 @@ $(document).ready(function(e){
                 $("#result_form_question").html('');
                 reply_user_id = 0;
                 reply_comment_id = 0;
+                box_comment = null;
+                $("#divReplyUser").hide();
                 $("#count_comments").html( ++count_comments );
             },
             error: function(data){
@@ -243,6 +253,10 @@ $(document).ready(function(e){
         reply_user_id = $(this).attr('href').split('/')[0];
         reply_comment_id = $(this).attr('href').split('/')[1];
         box_comment = $(this).closest('.box_comment');
+
+        let user_name = $(this).attr('href').split('/')[2];
+        $("#divReplyUser").show();
+        $("#reply_username").html(`${user_name}`);
     });
 
     $("body").on('click', '.like' , function(e){
@@ -316,7 +330,7 @@ $(document).ready(function(e){
             <div class="user-post">
                 <div class="friend-info">
                     <figure>
-                        <img src="/storage/${question.user.image}" alt="">
+                        <img src="/storage/${question.user.image}" style="min-width: 70px; min-height: 70px; max-width: 70px; max-height: 70px; border: 2px solid white;">
                     </figure>
                     <div class="dropdown float-right">
                         <a href="#" class="" data-toggle="dropdown"><i class="fa-solid fa-ellipsis-vertical text-primary"></i></a>
@@ -325,7 +339,7 @@ $(document).ready(function(e){
                         </div>
                     </div>
                     <div class="friend-name">
-                        <ins><a href="time-line.html" title="">${question.user.name}</a></ins>
+                        <ins><a href="/profile/${question.user.id}" title="">${question.user.name}</a></ins>
                         <span><i class="fa-solid fa-calendar-days"></i> published: ${ date_time.getFullYear() }/${date_time.getMonth()}/${date_time.getDate()} ${date_time.getHours()}:${date_time.getMinutes()}</span>
                     </div>
                     <div class="post-meta">

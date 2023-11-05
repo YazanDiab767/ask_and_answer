@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Notification;
 use App\Models\Question;
 use App\Models\Comment;
+use App\Models\Workspace;
 use Illuminate\Http\Request;
 
 class NotificationsController extends Controller
@@ -102,6 +103,48 @@ class NotificationsController extends Controller
         
         $n = Notification::create([
             'user_id' => $question->user->id,
+            'data' => json_encode( $data ),
+            'read' => false
+        ]);
+        return $n->load('user');
+    }
+
+    //set  invite workspace
+    public static function setInviteWorkspace($workspace_id , $user_id )
+    {
+        $workspace = Workspace::find($workspace_id);
+
+        $data = [
+            "type" => "invite_workspace",
+            "workspace_id" => $workspace_id,
+            "workspace_name" => $workspace->name,
+            "sender" => auth()->user()->name,
+            "sender_image" => auth()->user()->image
+        ];
+
+    
+        $n = Notification::create([
+            'user_id' => $user_id,
+            'data' => json_encode( $data ),
+            'read' => false
+        ]);
+        return $n->load('user');
+    }
+
+    //set message
+    public static function setMessage($receiver_id , $text , $goTo)
+    {
+        $data = [
+            "type" => "message",
+            "sender" => auth()->user()->name,
+            "sender_image" => auth()->user()->image,
+            "text" => $text,
+            "goTo" => "$goTo"
+        ];
+
+    
+        $n = Notification::create([
+            'user_id' => $receiver_id,
             'data' => json_encode( $data ),
             'read' => false
         ]);

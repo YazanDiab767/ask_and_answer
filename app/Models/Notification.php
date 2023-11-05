@@ -23,9 +23,19 @@ class Notification extends Model
         return Notification::where('user_id' ,auth()->user()->id)->count();
     }
 
+    //get number all notifications for messagbe
+    public static function getNumberNotificationsForMessages()
+    {
+        return Notification::where('user_id' ,auth()->user()->id)
+        ->where('data' , 'LIKE' , '%' . '"type":"message"' . '%')
+        ->where('read','0')
+        ->count();
+    }
+
     public static function getNumberNewNotifications()
     {
         return Notification::where('user_id',auth()->user()->id)
+            ->where('data' , '! LIKE' , '%' . '"type":"message"' . '%')
             ->where('read','0')
             ->count();
     }

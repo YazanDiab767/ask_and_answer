@@ -4,8 +4,14 @@
 
 @section('style')
 @parent
+    <link rel="stylesheet" href="{{ asset('css/select2.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('css/control_panel/all.css') }}">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
+    <style>
+		.select2-search__field, .select2-container{
+			width: 100% !important;
+		}
+	</style>
 @endsection
 
 
@@ -91,16 +97,16 @@
                 <form action="" id="formSetPermissions" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
-                    <div class="">
+                    {{-- <div class="">
                         <label style="display: flex;align-items: center;"><input type="checkbox" name="colleges" id="check_colleges" class="mr-1" style="flex: none; height: 25px; width: 25px;"  /> Colleges </label>
-                    </div>
-                    <div class="mt-4">
+                    </div> --}}
+                    {{-- <div class="mt-4">
                         <label style="display: flex;align-items: center;"><input type="checkbox"  name="questions_complaints" id="check_questions_complaints"  class="mr-1" style="flex: none; height: 25px; width: 25px;"  /> Questions And Complaints </label>
-                    </div>
+                    </div> --}}
                     <div class="mt-4">
-                        <label style="display: flex;align-items: center;"><input type="checkbox" name="course" id="check_course" class="mr-1" style="flex: none; height: 25px; width: 25px;"  /> Course </label>
+                        <label style="display: flex;align-items: center;"><input type="checkbox" name="course" id="check_course" class="mr-1" style="flex: none; height: 25px; width: 25px;"  /> Course(s) </label>
                         <div>
-                            <select class="form-control" id="course_id" name="course_id">
+                            <select class="multiple-select form-control" multiple="multiple" id="course_id" name="course_id[]">
                                 <option>Select Course</option>
                                 @foreach ($courses as $course)
                                     <option value="{{ $course->id }}">{{ $course->name }} / {{ $course->college->name }}</option>
@@ -126,10 +132,12 @@
 
 @section('script')
 @parent
+    <script src=" {{ asset('js/select2.min.js') }} "></script>
 	<script src="{{ asset('js/control_panel/all.js') }}"></script>
     <script src="{{ asset('js/control_panel/users.js') }}"></script>
     <script>
         var colleges_count = 0;
+        $('.multiple-select').select2();
     </script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src=" https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>

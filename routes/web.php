@@ -1,5 +1,6 @@
 <?php
 
+
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CollegesController;
 use App\Http\Controllers\CoursesController;
@@ -7,6 +8,7 @@ use App\Http\Controllers\QuestionsController;
 use App\Http\Controllers\ComplaintsController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\NotificationsController;
+use \App\Http\Controllers\WorkspaceController;
 
 
 use App\Models\College;
@@ -20,6 +22,12 @@ use App\Models\College;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+Route::get('/csrf', function(){
+    return response()->json(['csrf'=> csrf_token() ], 200);
+
+});
+
 
 Auth::routes();
 
@@ -42,9 +50,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/courses/{course}' , [CoursesController::class, 'show'])->name('courses.course');
     Route::post('/courses/addUserCourses',[CoursesController::class,'addUserCourses'])->name('courses.addUserCourses');
     Route::post('/control_panel/courses/setResource/{course}' , [CoursesController::class, 'setResource'])->name('courses.setResource');
-
-    // Route::get('/courses/{course}' , [CoursesController::class, 'show'])->name('courses.course');
-
 
     //questions
     Route::resource('/questions', QuestionsController::class)->except(['create', 'edit']);
@@ -69,19 +74,45 @@ Route::middleware('auth')->group(function () {
     //users
     Route::get('/profile/{user}',[UsersController::class,'profile'])->name('users.profile');
     Route::post('/profile/updateImage',[UsersController::class,'updateImage'])->name('profile.updateImage');
-    Route::get('/getUserPosts',[QuestionsController::class,'user'])->name('questions.user');
+    Route::get('/getUserPosts/{user}',[QuestionsController::class,'user'])->name('questions.user');
     Route::get('/settings',[UsersController::class,'settings'])->name('users.settings');
     Route::post('/settings/update/{type}',[UsersController::class,'update'])->name('users.settings.update');
     Route::get('/getUserSavedPosts',[QuestionsController::class,'getSavedQuestions'])->name('questions.getSavedQuestions');
 
-
+    //chats
+    Route::get('/chatWithSupervisor/{course}',[UsersController::class,'chatWithSupervisor'])->name('users.chatWithSupervisor');
+    Route::get('/chatWithSupervisor/{course}/{user}',[UsersController::class,'chatWithUser'])->name('users.chatWithUser');
+    Route::get('/getChatWithSupervisor/{course}/{user}',[UsersController::class,'getChatWithSupervisor'])->name('users.getChatWithSupervisor');
+    Route::post('/setChatWithSupervisor/{course}/{user}',[UsersController::class,'sendMessageToChatWithSupervisor'])->name('users.sendMessageToChatWithSupervisor');
 
     //complaints
     Route::post('/complaints/add/{question}' , [ComplaintsController::class,'add'])->name('complaints.add');
 
+    //workspace
+    Route::get('/workspace',[WorkspaceController::class,'index'])->name('workspace.index');
+    Route::get('/workspace/{workspace}',[WorkspaceController::class,'workspace'])->name('workspace.workspace');
+    Route::get('/workspace/get/{id}',[WorkspaceController::class,'get'])->name('workspace.get');
+    Route::get('/workspace/getWorks/{workspace}',[WorkspaceController::class,'getWorks'])->name('workspace.getWorks');
+    Route::post('/workspace/add',[WorkspaceController::class,'add'])->name('workspace.add');
+    Route::post('/workspace/delete/{workspace}',[WorkspaceController::class,'delete'])->name('workspace.delete');
+    Route::post('/workspace/invite/{workspace}',[WorkspaceController::class,'invite'])->name('workspace.invite');
+    Route::post('/workspace/uploadWork/{workspace}',[WorkspaceController::class,'uploadWork'])->name('workspace.uploadWork');
+    Route::post('/workspace/leave/{workspace}/{user}',[WorkspaceController::class,'leave'])->name('workspace.leave');
+    Route::post('/workspace/accept/{workspace}',[WorkspaceController::class,'accept'])->name('workspace.accept');
+    Route::get('/workspace/getMessagesToAll/{workspace}',[WorkspaceController::class,'getMessagesToAll'])->name('workspace.getMessagesToAll');
+    Route::get('/workspace/getMessagesPrivate/{workspace}/{user}',[WorkspaceController::class,'getMessagesPrivate'])->name('workspace.getMessagesPrivate');
+    Route::post('/workspace/sendMessageToAll/{workspace}',[WorkspaceController::class,'sendMessageToAll'])->name('workspace.sendMessageToAll');
+    Route::post('/workspace/sendMessageToUser/{workspace}/{user}',[WorkspaceController::class,'sendMessageToUser'])->name('workspace.sendMessageToUser');
+    
+    
+    Route::get('/calendar' , [UsersController::class, 'calendar'])->name('calendar');
+
     //Control Panel / Dashbaord
     Route::middleware('CheckSupervisor')->group(function () {
         Route::prefix('control_panel')->group(function () {
+
+            //chats
+            Route::get('/getChatsCourse/{course}',[UsersController::class,'getChatsCourse'])->name('users.getChatsCourse');
 
             //Questions
             Route::get('/questions' , [QuestionsController::class, 'index'])->name('control_panel.questions');
@@ -134,5 +165,8 @@ Route::middleware('auth')->group(function () {
 });
 
 
+// *** A P I ***
+Route::post('/API/user/login', [App\Http\Controllers\API\UsersController::class, 'login']);
+Route::get('/API/user/getInfo', [App\Http\Controllers\API\UsersController::class, 'getInfo']);
 
 

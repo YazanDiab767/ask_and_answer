@@ -138,9 +138,12 @@
                                                                         <li class="post-comment">
                                                                             <div class="">
                                                                                 <form id="formAddComment" action="{{ route('question.addComment' , $question->id ) }}" method="post">
+                                                                                    <div id="divReplyUser">
+                                                                                        <label class="text-info"> <b><i class="fa-solid fa-at"></i> Reply to: <span id="reply_username"></span> </b> </label>
+                                                                                    </div>
                                                                                     <div class="row">
                                                                                         <div class="col-sm-1 float-right">
-                                                                                            <img src="/storage/{{  auth()->user()->image }}" style="min-width: 50px; min-height: 50px; max-width: 50px; max-height: 50px;">
+                                                                                            <img src="/storage/{{  auth()->user()->image }}" style="min-width: 50px; min-height: 50px; max-width: 50px; max-height: 50px; border-radius: 30px;">
                                                                                         </div>
                                                                                         <div class="col-sm-11 float-left">
                                                                                             <textarea class="form-control w-100" id="text" name="text" placeholder="Write your comment"></textarea>
