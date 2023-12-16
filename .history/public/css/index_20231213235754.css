@@ -1,0 +1,59 @@
+body {
+    background: url("../images/background.webp") no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: 100%;
+}
+
+.divider:after,
+.divider:before {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: #eee;
+}
+
+.h-custom {
+    height: calc(100% - 73px);
+}
+
+@media (max-width: 450px) {
+    .h-custom {
+        height: 100%;
+    }
+}
+
+
+.login-form {
+    padding: 15px;
+    border-radius: 15px;
+    background-color: rgba(0, 0, 0, 0.4);
+    /* background-color: #77a6f2; */
+    color: white !important;
+    box-shadow: -1px -1px 13px 0px rgba(255, 255, 255, 0.82);
+    -webkit-box-shadow: -1px -1px 13px 0px rgba(255, 255, 255, 0.82);
+    -moz-box-shadow: -1px -1px 13px 0px rgba(255, 255, 255, 0.82);
+    margin-top: 25px;
+}
+
+.card-sign-up {
+    display: none;
+}
+
+.invalid-feedback {
+    background-color: white !important;
+    padding: 1px;
+    width: 100%;
+}
+
+.alert-danger {
+    background-color: white !important;
+    border-radius: 0px;
+}
+
+
+.select2-container {
+    width: 100% !important;
+    font-size: 18px !important;
+}

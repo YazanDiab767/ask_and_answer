@@ -1,0 +1,61 @@
+.central-meta{
+    background: url("../images/background_workspace.jpg") no-repeat center center fixed; 
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: 100%;
+    padding-bottom: 350px;
+    color: white !important;
+}
+.nearly-pepls img{
+    max-width: 150px;
+    min-width: 150px;
+    max-height: 100px;
+    min-height: 100px;
+
+}
+.pepl-info{
+    color: black !important;
+}
+
+.members img{
+    max-width: 30px;
+    min-width: 30px;
+    max-height: 30px;
+    min-height: 30px;
+    border-radius: 30px;
+    border: 1px solid white;
+}
+.info{
+    height: 100%;
+    box-shadow: -1px 9px 30px 0px rgba(255,255,255,0.75);
+    border-radius: 6px;
+}
+
+.news{
+}
+.messages{
+    box-shadow: -1px 9px 30px 0px rgba(255,255,255,0.75);
+    border-radius: 6px;
+    padding-bottom: 12px;
+}
+.tag {
+    color: black !important;
+}
+.bootstrap-tagsinput{
+    width: 100% !important;
+}
+
+.accept_div{
+    box-shadow: -1px 9px 30px 0px rgba(0,0,0,0.75);
+    margin-top: 120px;
+    padding: 15px;
+}
+
+.peoples-mesg-box > ul > .me > p {
+    background:  rgba(3, 177, 251, 0.837) !important;
+}
+
+.peoples-mesg-box > ul > li.me p::after {
+    border-left: 10px solid rgba(3, 177, 251, 0.837) !important;
+}
