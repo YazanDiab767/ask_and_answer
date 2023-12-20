@@ -88,6 +88,7 @@ class RegisterController extends Controller
         }
         else 
         {
+            print($university["id"]);
             $data["university"] = $university->id;
         }
 

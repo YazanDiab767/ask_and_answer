@@ -19,7 +19,7 @@ class UsersController extends Controller
         if( $user!='[]' && Hash::check($request->password,$user->password) ){
             // $token = $user->createToken('Personal Access Token')->plainTextToken;
             $token = $user->createToken('MyApp')->plainTextToken;
-            $response = ['status' => 200, 'token' => $token, 'user' => $user, 'message' => 'success'];
+            $response = ['status' => 200, 'token' => $token, 'user' => $user->load('university', 'major'), 'message' => 'success'];
             return response()->json($response);
         }else if($user=='[]'){
             $response = ['status' => 500, 'message' => 'No account found with this email'];
@@ -33,7 +33,7 @@ class UsersController extends Controller
 
     public function getInfo()
     {
-        return response()->json(['data'=> auth()->user() ], 200);
+        return response()->json(['data'=> auth()->user()->load('university')->load('major') ], 200);
     }
 
     public function auth(Request $request)
@@ -47,13 +47,15 @@ class UsersController extends Controller
             env('PUSHER_APP_ID'),
             [
                 'cluster' => env('PUSHER_APP_CLUSTER'),
-                'useTLS' => true,
-            ]
+                'host' => '127.0.0.1',
+                'port' => 6001,
+                'scheme' => 'http',
+                'useTLS' => false,
+            ],
         );
 
         $auth = $pusher->socket_auth($channelName, $socketId);
 
         return response($auth);
-    
-
+    }
 }

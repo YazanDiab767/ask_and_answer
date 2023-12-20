@@ -38,10 +38,6 @@ Route::get('/', function () {
     return view('index');
 })->name('index');
 
-Route::get('/college/getAllMajors', [CollegesController::class,'getAllMajors'])->name('colleges.getAllMajors');
-Route::get('/college/getAllUniversities', [CollegesController::class,'getAllUniversities'])->name('colleges.getAllUniversities');
-
-
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/courses/addUserCourses/a/b', function(){

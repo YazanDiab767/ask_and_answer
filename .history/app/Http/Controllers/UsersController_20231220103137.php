@@ -32,7 +32,7 @@ class UsersController extends Controller
 
     public function getInfo()
     {
-        return response()->json(['data'=> auth()->user()->load('university')->load('major.college') ], 200);
+        return response()->json(['data'=> auth()->user()->load('university')->load('major') ], 200);
     }
     
     public function profile(User $user)

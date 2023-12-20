@@ -379,7 +379,7 @@
                       <div class="form-white mb-4">
                         <select class="form-control form-control-lg universities" id="r_university" name="university">
                           <option value="">select your university</option>
-                          @foreach (\App\Http\Controllers\CollegesController::getAllUniversities() as $university)
+                          @foreach (\App\Models\University::all() as $university)
                               <option value="{{ $university->name }}">{{ $university->name }}</option>
                           @endforeach
                         </select>

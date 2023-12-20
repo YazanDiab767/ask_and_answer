@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use App\models\User;
+use Pusher\Pusher;
 
 class UsersController extends Controller
 {
@@ -18,7 +19,7 @@ class UsersController extends Controller
         if( $user!='[]' && Hash::check($request->password,$user->password) ){
             // $token = $user->createToken('Personal Access Token')->plainTextToken;
             $token = $user->createToken('MyApp')->plainTextToken;
-            $response = ['status' => 200, 'token' => $token, 'user' => $user, 'message' => 'success'];
+            $response = ['status' => 200, 'token' => $token, 'user' => $user->load('university'), 'message' => 'success'];
             return response()->json($response);
         }else if($user=='[]'){
             $response = ['status' => 500, 'message' => 'No account found with this email'];
@@ -35,4 +36,26 @@ class UsersController extends Controller
         return response()->json(['data'=> auth()->user() ], 200);
     }
 
+    public function auth(Request $request)
+    {
+        $socketId = $request->input('socket_id');
+        $channelName = $request->input('channel_name');
+
+        $pusher = new Pusher(
+            env('PUSHER_APP_KEY'),
+            env('PUSHER_APP_SECRET'),
+            env('PUSHER_APP_ID'),
+            [
+                'cluster' => env('PUSHER_APP_CLUSTER'),
+                'host' => '127.0.0.1',
+                'port' => 6001,
+                'scheme' => 'http',
+                'useTLS' => false,
+            ],
+        );
+
+        $auth = $pusher->socket_auth($channelName, $socketId);
+
+        return response($auth);
+    }
 }

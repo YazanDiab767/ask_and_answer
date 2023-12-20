@@ -76,19 +76,15 @@ class RegisterController extends Controller
         //     $data["major"] = $new->id;
         // }
 
-        $university = \App\Models\University::where('name', $data["university"])->first();
+        $university = \App\Models\University::where('name', $data["university"]);
 
-        if (! $university )
+        if ($university->count()  < 1 )
         {
             $new = \App\Models\University::create([
                 "name" => $data["university"],
                 "add_by" => "student"
             ]);
             $data["university"] = $new->id;
-        }
-        else 
-        {
-            $data["university"] = $university->id;
         }
 
         return User::create([

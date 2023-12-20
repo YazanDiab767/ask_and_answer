@@ -39,8 +39,8 @@ Route::get('/', function () {
 })->name('index');
 
 Route::get('/college/getAllMajors', [CollegesController::class,'getAllMajors'])->name('colleges.getAllMajors');
-Route::get('/college/getAllUniversities', [CollegesController::class,'getAllUniversities'])->name('colleges.getAllUniversities');
-
+Route::get('/college/getAllMajors', [CollegesController::class,'getAllMajors'])->name('colleges.getAllMajors');
+University
 
 Route::middleware('auth:sanctum')->group(function () {
 

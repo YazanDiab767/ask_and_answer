@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\College;
 use App\Models\Operation;
 use App\Models\Major;
-use App\Models\University;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -35,11 +34,6 @@ class CollegesController extends Controller
     public function getAllMajors(Request $request)
     {
         return Major::all()->load('college');
-    }
-
-    public function getAllUniversities()
-    {
-        return University::where('add_by','!=','student')->get();
     }
 
     // D A S H - B O A R D

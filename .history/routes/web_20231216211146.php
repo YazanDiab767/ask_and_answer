@@ -38,10 +38,6 @@ Route::get('/', function () {
     return view('index');
 })->name('index');
 
-Route::get('/college/getAllMajors', [CollegesController::class,'getAllMajors'])->name('colleges.getAllMajors');
-Route::get('/college/getAllUniversities', [CollegesController::class,'getAllUniversities'])->name('colleges.getAllUniversities');
-
-
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/courses/addUserCourses/a/b', function(){
@@ -157,6 +153,7 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('/college/getMajors/{college}', [CollegesController::class,'getMajors'])->name('colleges.getMajors');
             Route::post('/college/setMajor/{college}', [CollegesController::class,'setMajor'])->name('colleges.setMajor');
             Route::delete('/college/deleteMajor/{major}', [CollegesController::class,'deleteMajor'])->name('colleges.deleteMajor');
+            Route::get('/college/getAllMajors', [CollegesController::class,'getMajors'])->name('colleges.getMajors');
 
             //Universities
             Route::resource('/universities', UniversitiesController::class)->except(['create', 'edit']);

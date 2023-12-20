@@ -37,9 +37,9 @@ class CollegesController extends Controller
         return Major::all()->load('college');
     }
 
-    public function getAllUniversities()
+    public function getAllUniversities(Request $request)
     {
-        return University::where('add_by','!=','student')->get();
+        return University::all();
     }
 
     // D A S H - B O A R D

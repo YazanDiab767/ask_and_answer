@@ -39,7 +39,7 @@ class CollegesController extends Controller
 
     public function getAllUniversities()
     {
-        return University::where('add_by','!=','student')->get();
+        return University::where('add_by','!=','student');
     }
 
     // D A S H - B O A R D
