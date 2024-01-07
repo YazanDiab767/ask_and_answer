@@ -289,34 +289,7 @@ class WorkspaceController extends Controller
         ]);
         
         broadcast(new \App\Events\NewMessageWorkspace( $m->load('user')  ))->toOthers();
-
-        $all_members = array();
-        $members = json_decode( $workspace->members , JSON_FORCE_OBJECT );
-
-        if ( $workspace->user_id != auth()->user()->id )
-        {
-            $text = "sent new message in ( ".  $workspace->name ." - Workspace )";
-            $notif = \App\Http\Controllers\NotificationsController::setMessage( $workspace->user_id, $text , "/workspace/" . $workspace->id);
-            broadcast(new \App\Events\NewNotification( $notif  ))->toOthers();
-        }
-
-        if ( $members )
-        {
-            foreach ($members as $key => $value) 
-            {
-                $email = $value["email"];
-                if ( $value["accept"] == "accept" )
-                {
-                    $member = \App\Models\User::where('email',$email)->first();
-                    if ( $member->id != auth()->user()->id )
-                    {
-                        $text = "sent new message in ( ".  $workspace->name ." - Workspace )";
-                        $notif = \App\Http\Controllers\NotificationsController::setMessage( $member->id , $text , "/workspace/" . $workspace->id);
-                        broadcast(new \App\Events\NewNotification( $notif  ))->toOthers();
-                    }
-                }
-            } 
-        }
+        
 
         return ChatWorkspace::where('chat_workspaces.id', $m->id)->with('user')->first();
     }

@@ -295,9 +295,7 @@ class WorkspaceController extends Controller
 
         if ( $workspace->user_id != auth()->user()->id )
         {
-            $text = "sent new message in ( ".  $workspace->name ." - Workspace )";
-            $notif = \App\Http\Controllers\NotificationsController::setMessage( $workspace->user_id, $text , "/workspace/" . $workspace->id);
-            broadcast(new \App\Events\NewNotification( $notif  ))->toOthers();
+            
         }
 
         if ( $members )

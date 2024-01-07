@@ -33,6 +33,13 @@ class WorkspaceController extends Controller
         );
     }
 
+    public function getWorkspace(workspace $workspace)
+    {
+        return Workspace::where('id',$workspace->id)->with('user')->get();
+    }
+
+    
+
     public function add(Request $request)
     {
         $validated = $request->validate([
@@ -43,10 +50,12 @@ class WorkspaceController extends Controller
             'user_id' => auth()->user()->id,
             'name' => $request->name,
             'members' => '{}',
-            'files' => '{}'
+            'files' => '{}',
+            'tasks' => '{}',
+            'events' => '{}'
         ]);
 
-        return Workspace::where('id', $workspace->id)->with('user');
+        return Workspace::where('id', $workspace->id)->with('user')->get();
     }
 
     public function uploadWork(Request $request, workspace $workspace)
@@ -143,6 +152,111 @@ class WorkspaceController extends Controller
         return json_decode( $workspace->files , JSON_FORCE_OBJECT );
     }
 
+    public function addTask( Request $request , workspace $workspace )
+    {
+        $tasks = json_decode($workspace->tasks , JSON_FORCE_OBJECT);
+        $user_tasks;
+
+
+
+        if ( isset( $tasks[$request->username] ) ) // the user has already tasks, so add new task to all  property_exists($tasks, $request->username) 
+        {
+            $user_tasks = $tasks[ $request->username ];
+        }
+
+        $key = (string) date("Y-m-d H:i:s"); // time now with milieseconds
+
+        $user_tasks[ $key ] = array(
+            "title" => $request->title,
+            "date" => $request->date,
+            "isDone" => false,
+            "addBy" => ""
+        );
+
+        $tasks[ $request->username ] = $user_tasks;
+        $workspace->tasks = $tasks;
+        $workspace->save();
+
+        return $key;
+    }
+
+    public function addEvent( Request $request , workspace $workspace )
+    {
+        $events = json_decode($workspace->events , JSON_FORCE_OBJECT);
+
+
+        $key = (string) date("Y-m-d H:i:s"); // time now with milieseconds
+
+        $events[ $key ] = array(
+            "addBy" => auth()->user()->name,
+            "title" => $request->title,
+            "date" => $request->date,
+        );
+
+        $workspace->events = $events;
+        $workspace->save();
+
+        return $key;
+    }
+
+
+    public function getTasks( Request $request , workspace $workspace )
+    {
+        $tasks = json_decode($workspace->tasks , JSON_FORCE_OBJECT);
+        return $tasks;
+    }
+
+    public function toggleTaskCompletion(Request $request, workspace $workspace)
+    {
+        $tasks = json_decode($workspace->tasks , JSON_FORCE_OBJECT);
+        $user_tasks = $tasks[ auth()->user()->name ];
+
+        if ( $user_tasks[$request->key]["isDone"] == '' || $user_tasks[$request->key]["isDone"] == false )
+            $user_tasks[$request->key]["isDone"] = true;
+        else
+            $user_tasks[$request->key]["isDone"] = false;
+
+        $tasks[ auth()->user()->name ] = $user_tasks;
+
+        $workspace->tasks = $tasks;
+        $workspace->save();
+    }
+
+    public function deleteTask(Request $request, workspace $workspace)
+    {
+        $tasks = json_decode($workspace->tasks , JSON_FORCE_OBJECT);
+        $user_tasks = $tasks[ auth()->user()->name ];
+
+        unset($user_tasks[$request->key]);
+
+        $tasks[ auth()->user()->name ] = $user_tasks;
+
+        $workspace->tasks = $tasks;
+        $workspace->save();
+
+    }
+
+    public function updateTask(Request $request, workspace $workspace)
+    {
+        $tasks = json_decode($workspace->tasks , JSON_FORCE_OBJECT);
+        $user_tasks = $tasks[ auth()->user()->name ];
+
+        echo "the key is: " . $request->key;
+
+        $user_tasks[$request->key] = array(
+            "title" => $request->title,
+            "date" => $request->date,
+            "isDone" => $request->isDone,
+            "addBy" => ""
+        );
+
+        $tasks[ auth()->user()->name ] = $user_tasks;
+
+        $workspace->tasks = $tasks;
+        $workspace->save();
+
+    }
+
     // *** CHAT ***
 
     public function getMessagesToAll(Request $request , workspace $workspace)
@@ -175,6 +289,32 @@ class WorkspaceController extends Controller
         ]);
         
         broadcast(new \App\Events\NewMessageWorkspace( $m->load('user')  ))->toOthers();
+
+        $all_members = array();
+        $members = json_decode( $workspace->members , JSON_FORCE_OBJECT );
+
+        if ( $workspace->user_id != auth()->user()->id )
+        {
+            
+        }
+
+        if ( $members )
+        {
+            foreach ($members as $key => $value) 
+            {
+                $email = $value["email"];
+                if ( $value["accept"] == "accept" )
+                {
+                    $member = \App\Models\User::where('email',$email)->first();
+                    if ( $member->id != auth()->user()->id )
+                    {
+                        $text = "sent new message in ( ".  $workspace->name ." - Workspace )";
+                        $notif = \App\Http\Controllers\NotificationsController::setMessage( $member->id , $text , "/workspace/" . $workspace->id);
+                        broadcast(new \App\Events\NewNotification( $notif  ))->toOthers();
+                    }
+                }
+            } 
+        }
 
         return ChatWorkspace::where('chat_workspaces.id', $m->id)->with('user')->first();
     }

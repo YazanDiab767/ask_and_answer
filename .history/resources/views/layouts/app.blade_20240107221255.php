@@ -69,7 +69,7 @@
     <script src="{{ asset('js/main.js') }}"></script>
 
     <script>
-        var host = "http://192.168.1.18/";
+        var host = "http://169.254.24.22/";
     </script>
     <!-- MDB -->
     {{-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.1/mdb.min.js"></script> --}}
