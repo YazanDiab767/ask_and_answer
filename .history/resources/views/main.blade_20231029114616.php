@@ -27,19 +27,19 @@
 										<ul class="naves">
 											<li>
 												<i class="fa-solid fa-newspaper"></i>
-												<a href="" title="">News feed</a>
+												<a href="newsfeed.html" title="">News feed</a>
 											</li>
 											<li>
 												<i class="fa-solid fa-address-card"></i>
-												<a href="{{ route('users.profile' , auth()->user()->id) }}" title="">My profile</a>
+												<a href="fav-page.html" title="">My profile</a>
 											</li>
 											<li>
 												<i class="fa-solid fa-building"></i>
 												<a href="timeline-friends.html" title="">Colleges</a>
 											</li>
 											<li>
-												<i class="fa-solid fa-envelopes-bulk"></i>
-												<a href="{{ route('offers') }}" title="">Offers</a>
+												<i class="fa-solid fa-chart-line"></i>
+												<a href="timeline-friends.html" title="">Activites</a>
 											</li>
 											<li>
 												<form class="logout-form" action="{{ route('logout') }}" method="POST">

@@ -54,7 +54,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user/getInfo', [App\Http\Controllers\UsersController::class, 'getInfo']);
 
     Route::get('/user/getOffers', [App\Http\Controllers\UsersController::class, 'getOffers']);
-    Route::get('/offers', [App\Http\Controllers\UsersController::class, 'showOffers'])->name('offers');
+    Route::get('/user/getOffers', [App\Http\Controllers\UsersController::class, 'getOffers']);
 
 
     Route::get('/main', function () { return view('main'); })->name('main');

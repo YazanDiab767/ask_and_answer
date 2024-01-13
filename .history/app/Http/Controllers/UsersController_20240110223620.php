@@ -30,6 +30,7 @@ class UsersController extends Controller
 
     public function getOffers()
     {
+        echo asset('offers.txt'); 
         $jsonData = file_get_contents(asset('offers.txt'));
 
         // Decode the JSON data into a PHP associative array
@@ -40,8 +41,7 @@ class UsersController extends Controller
             die('Error decoding JSON: ' . json_last_error_msg());
         }        
 
-        return $jsonData;
-        // return ($response->getBody());
+        return ($response->getBody());
     }
 
     public function getActivities()

@@ -52,17 +52,10 @@ class CoursesController extends Controller
 
     public function getMyCourses()
     {
-        $my_courses = explode(',', auth()->user()->courses);
-        $courses = array();
-        // print_r( $courses );
-        if ( count( $my_courses ) > 0 )
-        {
-            for ( $i = 0 ; $i < count($my_courses); $i++ )
-            {
-                array_push($courses,  Course::where('id', $my_courses[$i])->with('college')->with('questions')->get() );
-            }
-        }
-        return $courses;
+        $courses = explode(',', auth()->user()->courses);
+        print_r( $courses );
+        // if (  )
+        return Course::where('id',auth()->user()->id)->get();
     }
 
     public function getSupervisorOfCourse(Request $request, Course $course)

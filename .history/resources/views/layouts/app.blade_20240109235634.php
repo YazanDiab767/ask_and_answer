@@ -69,12 +69,32 @@
     <script src="{{ asset('js/main.js') }}"></script>
 
     <script>
-        var host = "http://192.168.1.16/";
+        var host = "http://192.168.1.18/";
     </script>
     <!-- MDB -->
     {{-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.1/mdb.min.js"></script> --}}
 
     @yield('script')
     
+
+    <script>
+const settings = {
+	async: true,
+	crossDomain: true,
+	url: 'https://linkedin-jobs-scraper-api.p.rapidapi.com/jobs',
+	method: 'POST',
+	headers: {
+		'content-type': 'application/json',
+		'X-RapidAPI-Key': '3a2d6e59b7mshc76106240c24a0ap1eca0ejsn27acfc71ba50',
+		'X-RapidAPI-Host': 'linkedin-jobs-scraper-api.p.rapidapi.com'
+	},
+	processData: false,
+	data: '{\r\n    "title": "Software Engineer",\r\n    "location": "Berlin",\r\n    "rows": 100\r\n}'
+};
+
+$.ajax(settings).done(function (response) {
+	console.log(response);
+});
+    </script>
 </body>
 </html>

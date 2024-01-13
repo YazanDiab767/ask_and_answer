@@ -40,8 +40,7 @@ class UsersController extends Controller
             die('Error decoding JSON: ' . json_last_error_msg());
         }        
 
-        return $jsonData;
-        // return ($response->getBody());
+        return ($response->getBody());
     }
 
     public function getActivities()

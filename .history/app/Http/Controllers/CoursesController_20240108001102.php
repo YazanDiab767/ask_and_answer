@@ -59,7 +59,7 @@ class CoursesController extends Controller
         {
             for ( $i = 0 ; $i < count($my_courses); $i++ )
             {
-                array_push($courses,  Course::where('id', $my_courses[$i])->with('college')->with('questions')->get() );
+                array_push($courses,  Course::where('id', $my_courses[$i])->with('college')->get() );
             }
         }
         return $courses;

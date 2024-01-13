@@ -22,27 +22,7 @@ class UsersController extends Controller
         return view('test');
     }
 
-
-    public function showOffers()
-    {
-        return view('offers');
-    }
-
-    public function getOffers()
-    {
-        $jsonData = file_get_contents(asset('offers.txt'));
-
-        // Decode the JSON data into a PHP associative array
-        $phpArray = json_decode($jsonData, true);
-        
-        // Check if decoding was successful
-        if ($phpArray === null && json_last_error() !== JSON_ERROR_NONE) {
-            die('Error decoding JSON: ' . json_last_error_msg());
-        }        
-
-        return $jsonData;
-        // return ($response->getBody());
-    }
+    
 
     public function getActivities()
     {

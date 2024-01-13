@@ -38,8 +38,8 @@
 												<a href="timeline-friends.html" title="">Colleges</a>
 											</li>
 											<li>
-												<i class="fa-solid fa-envelopes-bulk"></i>
-												<a href="{{ route('offers') }}" title="">Offers</a>
+												<i class="fa-solid fa-chart-line"></i>
+												<a href="timeline-friends.html" title="">Jobs</a>
 											</li>
 											<li>
 												<form class="logout-form" action="{{ route('logout') }}" method="POST">

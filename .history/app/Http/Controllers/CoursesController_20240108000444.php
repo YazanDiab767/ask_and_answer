@@ -47,22 +47,12 @@ class CoursesController extends Controller
 
     public function getCourseResources(Request $request, Course $course)
     {
-        return \App\Models\Resource::where('course_id',$course->id)->get();
+        return \App\Models\Resource::where('id',1)->get();
     }
 
     public function getMyCourses()
     {
-        $my_courses = explode(',', auth()->user()->courses);
-        $courses = array();
-        // print_r( $courses );
-        if ( count( $my_courses ) > 0 )
-        {
-            for ( $i = 0 ; $i < count($my_courses); $i++ )
-            {
-                array_push($courses,  Course::where('id', $my_courses[$i])->with('college')->with('questions')->get() );
-            }
-        }
-        return $courses;
+        return Course::where('user_id',auth()->user()->id)->get();
     }
 
     public function getSupervisorOfCourse(Request $request, Course $course)

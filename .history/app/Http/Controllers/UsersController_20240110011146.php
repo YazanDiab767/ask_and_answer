@@ -30,18 +30,22 @@ class UsersController extends Controller
 
     public function getOffers()
     {
-        $jsonData = file_get_contents(asset('offers.txt'));
+        $client = new \GuzzleHttp\Client();
 
-        // Decode the JSON data into a PHP associative array
-        $phpArray = json_decode($jsonData, true);
-        
-        // Check if decoding was successful
-        if ($phpArray === null && json_last_error() !== JSON_ERROR_NONE) {
-            die('Error decoding JSON: ' . json_last_error_msg());
-        }        
+        $response = $client->request('POST', 'https://linkedin-jobs-scraper-api.p.rapidapi.com/jobs', [
+            'body' => '{
+            "title": "Software Engineer",
+            "location": "Berlin",
+            "rows": 10
+        }',
+            'headers' => [
+                'X-RapidAPI-Host' => 'linkedin-jobs-scraper-api.p.rapidapi.com',
+                'X-RapidAPI-Key' => 'a1b585065cmsh2c4132428ece46dp153ebejsn639a89dfd033',
+                'content-type' => 'application/json',
+            ],
+        ]);
 
-        return $jsonData;
-        // return ($response->getBody());
+        return ($response->getBody());
     }
 
     public function getActivities()
