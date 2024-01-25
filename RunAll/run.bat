@@ -5,7 +5,7 @@ taskkill /F /IM Code.exe >nul 2>&1
 
 echo Starting Android emulator...
 cd /d C:\Users\EASY LIFE\AppData\Local\Android\Sdk\tools
-start cmd /T /k emulator -avd Pixel_7_Pro_API_33
+start cmd /T /k emulator -avd Pixel_7_Pro_API_34
 
 echo Waiting for Emulator to start...
 timeout /nobreak /t 8 >nul
